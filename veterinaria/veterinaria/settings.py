@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
 DATABASES = {
     'default': {
-         'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': environ.get('DB_NAME'),
         'USER': environ.get('DB_USER'),
         'PASSWORD': environ.get('DB_PASSWORD'),
