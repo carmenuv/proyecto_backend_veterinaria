@@ -1,2 +1,4 @@
 entorno_*/
 .env
+__pycache__/
+archivos_estaticos/

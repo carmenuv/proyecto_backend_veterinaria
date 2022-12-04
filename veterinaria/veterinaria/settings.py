@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from os import environ
+from dotenv import load_dotenv
+from datetime import timedelta
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gestion',
+    'corsheaders', # para trabajar con el uso de los cors
+    'rest_framework', # para django rest-framework pueda devolver la informacion por el navegador usando css y js
 ]
 
 MIDDLEWARE = [
@@ -76,12 +84,12 @@ WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'veterinaria',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'PORT': '3306', 
-        'HOST': 'localhost',
+         'ENGINE': 'django.db.backends.mysql',
+        'NAME': environ.get('DB_NAME'),
+        'USER': environ.get('DB_USER'),
+        'PASSWORD': environ.get('DB_PASSWORD'),
+        'HOST': environ.get('DB_HOST'),
+        'PORT': environ.get('DB_PORT')
     }
 }
 
