@@ -31,23 +31,48 @@ class EspecieApiView(ListCreateAPIView):
       },status = status.HTTP_201_CREATED)
 
 
-    def get(self):
-        
-        Especies = EspecieModel.objects.all()
-        # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
-        especies_serializados = self.serializer_class(instance=Especies, many=True)
-
-        return Response(data={
+  def get(self, request: Request):
+      Especies = EspecieModel.objects.all()
+      especies_serializados = self.serializer_class(instance=Especies, many=True)
+      return Response(data={
             'message': 'Las especies son:',
             'content': especies_serializados.data
-        })
+      })
 
 
 class EspecieToggleApiView(RetrieveUpdateDestroyAPIView):
+    
+        
     serializer_class = EspecieSerializer
     queryset= EspecieModel.objects.all()
 
+
     """
-    def get_queryset(self):
-        return self.get_serializer().meta.model.objects.filter(nombreEspecie = pk)
-    """
+
+
+    serializer_class = EspecieSerializer
+    queryset= EspecieModel.objects.all()
+
+    def put(self, request:Request, pk: str):
+        # primero busco si existe el plato
+        # SELECT * FROM platos WHERE id = ... LIMIT 1;
+        print(pk)
+        especieEncontrada = EspecieModel.objects.filter(nombreEspecie = pk).first()
+
+        if especieEncontrada is None:
+            return Response(data={
+                'message': 'plato no encontrado'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        # actualizare el estado de la disponibilidad
+        # la nueva disponibilidad sera la anterior al reves
+        especieEncontrada.disponibilidad = not especieEncontrada.disponibilidad
+
+        especieEncontrada.save()
+
+        return Response(data={
+            'message': 'plato actualizado exitosamente',
+            'content': self.serializer_class(instance=especieEncontrada).data
+        }, status=status.HTTP_201_CREATED)
+
+        """
