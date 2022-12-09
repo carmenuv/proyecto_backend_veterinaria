@@ -6,8 +6,6 @@ from rest_framework import status
 from .models import EspecieModel
 from .serializers import EspecieSerializer
 
-
-
 class EspecieApiView(ListCreateAPIView):
   serializer_class = EspecieSerializer
   queryset = EspecieModel.objects.all()
@@ -60,6 +58,4 @@ class EspecieToggleApiView(UpdateAPIView):
        
     },status = status.HTTP_201_CREATED)
   
-class EspecieActualizarApiView(RetrieveUpdateDestroyAPIView):
-    serializer_class = EspecieSerializer
-    queryset = EspecieModel.objects.all()
+
