@@ -31,35 +31,23 @@ class EspecieApiView(ListCreateAPIView):
         'content': nuevaEspecieSerializada.data
       },status = status.HTTP_201_CREATED)
 
-  def get(self,request:Request):
-    especies = EspecieModel.objects.all()
-    especies_serializados = self.serializer_class(instance=especies,many=True)
+  def get(self):
+        
+      Especies = EspecieModel.objects.all()
+      # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
+      especies_serializados = self.serializer_class(instance=Especies, many=True)
 
-    return Response(data={
-      'message':'Las especies es:',
-      'content': especies_serializados.data
-    })
-
-class EspecieToggleApiView(UpdateAPIView):
-  
-  serializer_class = EspecieModel
-  queryset = EspecieModel.objects.all()
-
-  def put(self,request:Request,EspecieId:str):
-    especieEncontrada = EspecieModel.objects.filter(EspecieId = EspecieId).first()
-
-    especieEncontrada.save()
-
-    if especieEncontrada is None:
       return Response(data={
-        'message': 'Especie no encontrada'
-      },status = status.HTTP_404_NOT_FOUND)
+          'message': 'Las especies son:',
+          'content': especies_serializados.data
+      })
 
-    return Response(data={
-      'message': 'Especie actualizada exitosamente',
-       
-    },status = status.HTTP_201_CREATED)
-  
-class EspecieActualizarApiView(RetrieveUpdateDestroyAPIView):
+
+class EspecieToggleApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = EspecieSerializer
-    queryset = EspecieModel.objects.all()
+    queryset= EspecieModel.objects.all()
+
+    """
+    def get_queryset(self):
+        return self.get_serializer().meta.model.objects.filter(nombreEspecie = pk)
+    """
