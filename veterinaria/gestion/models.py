@@ -10,3 +10,12 @@ class EspecieModel(models.Model):
 
   class Meta:
     db_table = 'especie'
+
+
+class TipoDetalleAtencionModel(models.Model):
+  TipoDetalleAtencionID = models.AutoField(primary_key= True, null=False, unique=True)
+  NombreDetalle = models.CharField(max_length=100, null=False, db_column='NombreDetalle')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'tipodetalleatencion'
