@@ -46,7 +46,25 @@ class EspecieApiView(ListCreateAPIView):
 
 class EspecieToggleApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = EspecieSerializer
-    queryset= EspecieModel.objects.all()
+    
+    def get(self, request: Request,pk):
+      Especies = EspecieModel.objects.filter(EspecieID = pk).first()
+      especies_serializados = self.serializer_class(instance=Especies)
+      return Response(especies_serializados.data)
+
+    def put(self, request:Request, pk: str):
+
+        especie=EspecieModel.objects.filter(EspecieID = pk).first()
+        serializer=EspecieSerializer(especie,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        especie=EspecieModel.objects.filter(EspecieID = pk).first()
+        especie.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
 
     """
     def get_queryset(self):
