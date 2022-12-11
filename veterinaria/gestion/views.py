@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView,UpdateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,7 +19,8 @@ class EspecieApiView(ListCreateAPIView):
       return Response(data={
         'message': 'Error al crear la especie',
         'content': informacion.errors
-      },status=status.HTTP_400_BAD_REQUEST)
+      },status=status.HTTP_400_BAD_REQUEST),
+      
     else:
       nuevaEspecie = informacion.save()
       nuevaEspecieSerializada = self.serializer_class(instance = nuevaEspecie)
@@ -28,7 +29,6 @@ class EspecieApiView(ListCreateAPIView):
         'message': 'Especie creada exitosamente',
         'content': nuevaEspecieSerializada.data
       },status = status.HTTP_201_CREATED)
-
 
   def get(self, request: Request):
       Especies = EspecieModel.objects.all()
