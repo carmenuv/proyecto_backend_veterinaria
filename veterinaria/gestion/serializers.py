@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import EspecieModel
 from .models import AnalisisModel
-from .models import TipoTrabajadorModels
+from .models import TipoTrabajadorModel
 
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
@@ -13,8 +13,8 @@ class AnalisisSerializer(serializers.AnalisisModel):
     model = AnalisisModel
     fields='__all__'
 
-class TipoTrabajadorSerializer(serializers.TipoTrabajadorModels):
+class TipoTrabajadorSerializer(serializers.TipoTrabajadorModel):
   class Meta:
-    model = TipoTrabajadorModels
+    model = TipoTrabajadorModel
     fields = '__all__'
   

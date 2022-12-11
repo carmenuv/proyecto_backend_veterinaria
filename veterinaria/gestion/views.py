@@ -165,8 +165,8 @@ class TipoTrabajadorToggleApiView(RetrieveUpdateDestroyAPIView):
     
     def get(self, request: Request,pk):
       TipoTrabajadores = TipoTrabajadorModel.objects.filter(TipoTrabajadorID = pk).first()
-      tipoTrabajdores_serializados = self.serializer_class(instance=TipoTrabajadores)
-      return Response(tipoTrabajdores_serializados.data)
+      tipoTrabajadores_serializados = self.serializer_class(instance=TipoTrabajadores)
+      return Response(tipoTrabajadores_serializados.data)
 
     def put(self, request:Request, pk: str):
 
