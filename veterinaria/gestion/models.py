@@ -46,3 +46,20 @@ class ServicioModel(models.Model):
 
   class Meta:
     db_table = 'servicio'
+
+class AreaModel(models.Model):
+  AreaID = models.AutoField(primary_key= True, null=False, unique=True)
+  nombreArea = models.CharField(max_length=100, null=False, db_column='NombreArea')
+  Descripcion = models.CharField(max_length=250, null=False, db_column='Descripcion')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'area'
+
+class TipoDocumentoModel(models.Model):
+  TipoDocumentoID = models.AutoField(primary_key= True, null=False, unique=True)
+  nombreDocumento = models.CharField(max_length=50, null=False, db_column='NombreDocumento')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'tipodocumento'

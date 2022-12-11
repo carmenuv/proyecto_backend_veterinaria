@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView
+from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView
 
 
 urlpatterns = [
@@ -16,4 +16,9 @@ urlpatterns = [
     path('actualizar-diagnostico/<str:pk>', DiagnosticoToggleApiView.as_view()),
     path('registro-servicio/', ServicioApiView.as_view()),
     path('actualizar-servicio/<str:pk>', ServicioToggleApiView.as_view()),
+
+    path('registro-area/', AreaApiView.as_view()),
+    path('actualizar-area/<str:pk>', AreaToggleApiView.as_view()),
+    path('registro-documento/', TipoDocumentoApiView.as_view()),
+    path('actualizar-documento/<str:pk>', DocumentoToggleApiView.as_view()),
 ]

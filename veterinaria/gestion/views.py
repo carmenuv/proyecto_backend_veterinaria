@@ -3,8 +3,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel
-from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel
+from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer
 
 class EspecieApiView(ListCreateAPIView):
   serializer_class = EspecieSerializer
@@ -274,4 +274,118 @@ class ServicioToggleApiView(RetrieveUpdateDestroyAPIView):
     def delete(self, request:Request, pk: str):
         servicio=ServicioModel.objects.filter(ServicioID = pk).first()
         servicio.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+
+class AreaApiView(ListCreateAPIView):
+  serializer_class = AreaSerializer
+  queryset = AreaModel.objects.all()
+
+  def post(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el area',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevaArea = informacion.save()
+      nuevaAreaSerializada = self.serializer_class(instance = nuevaArea)
+      
+      return Response(data = {
+        'message': 'Area creada exitosamente',
+        'content': nuevaAreaSerializada.data
+      },status = status.HTTP_201_CREATED)
+
+  def get(self, request: Request):
+        
+        Areas = AreaModel.objects.all()
+        # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
+        areas_serializadas = self.serializer_class(instance=Areas, many=True)
+
+        return Response(data={
+            'message': 'Las areas son:',
+            'content': areas_serializadas.data
+        }) 
+
+
+class AreaToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = AreaSerializer
+    
+    def get(self, request: Request,pk):
+      Areas = AreaModel.objects.filter(AreaID = pk).first()
+      areas_serializadas = self.serializer_class(instance=Areas)
+      return Response(areas_serializadas.data)
+
+    def put(self, request:Request, pk: str):
+
+        area=AreaModel.objects.filter(AreaID = pk).first()
+        serializer=AreaSerializer(area,data=request.data)
+        if serializer.is_valid():
+          serializer.save()
+          return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        area=AreaModel.objects.filter(AreaID = pk).first()
+        area.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TipoDocumentoApiView(ListCreateAPIView):
+  serializer_class = TipoDocumentoSerializer
+  queryset = TipoDocumentoModel.objects.all()
+
+  def post(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el documento',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoDocumento = informacion.save()
+      nuevaDocumentoserilizado = self.serializer_class(instance = nuevoDocumento)
+      
+      return Response(data = {
+        'message': 'Documento creado exitosamente',
+        'content': nuevaDocumentoserilizado.data
+      },status = status.HTTP_201_CREATED)
+
+  def get(self, request: Request):
+        
+        Documento = TipoDocumentoModel.objects.all()
+        # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
+        documentos_serializados = self.serializer_class(instance=Documento, many=True)
+
+        return Response(data={
+            'message': 'Los documentos son:',
+            'content': documentos_serializados.data
+        }) 
+
+
+class DocumentoToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = TipoDocumentoSerializer
+    
+    def get(self, request: Request,pk):
+      Documentos = TipoDocumentoModel.objects.filter(TipoDocumentoID = pk).first()
+      documentos_serializados = self.serializer_class(instance=Documentos)
+      return Response(documentos_serializados.data)
+
+    def put(self, request:Request, pk: str):
+
+        documento=TipoDocumentoModel.objects.filter(TipoDocumentoID = pk).first()
+        serializer=TipoDocumentoSerializer(documento,data=request.data)
+        if serializer.is_valid():
+          serializer.save()
+          return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        documento=TipoDocumentoModel.objects.filter(TipoDocumentoID= pk).first()
+        documento.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
