@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView
+from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView, AnalisisApiView, AnalisisToggleApiView, TipoTrabajadorApiView,TipoTrabajadorToggleApiView
 
 
 urlpatterns = [
@@ -21,4 +21,9 @@ urlpatterns = [
     path('actualizar-area/<str:pk>', AreaToggleApiView.as_view()),
     path('registro-documento/', TipoDocumentoApiView.as_view()),
     path('actualizar-documento/<str:pk>', DocumentoToggleApiView.as_view()),
+
+    path('registro-analisis/', AnalisisApiView.as_view()),
+    path('actualizar-analisis/<str:pk>', AnalisisToggleApiView.as_view()),
+    path('registro-tipoTrabajador/', TipoTrabajadorApiView.as_view()),
+    path('actualizar-tipoTrabajador/<str:pk>', TipoTrabajadorToggleApiView.as_view()),
 ]
