@@ -30,3 +30,19 @@ class RazaModel(models.Model):
 
   class Meta:
     db_table = 'Raza'
+
+class DiagnosticoModel(models.Model):
+  DiagnosticoID = models.AutoField(primary_key=True, null=False, unique=True)
+  detalleDiagnostico = models.TextField(null=False, db_column='DetalleDiagnostico')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'diagnostico'
+
+class ServicioModel(models.Model):
+  ServicioID = models.AutoField(primary_key=True, null=False, unique=True)
+  nombreServicio = models.CharField(max_length=100, null=False, db_column='NombreServicio')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'servicio'
