@@ -11,6 +11,8 @@ class EspecieModel(models.Model):
   class Meta:
     db_table = 'especie'
 
+  def __str__(self):
+    return self.nombreEspecie
 
 class TipoDetalleAtencionModel(models.Model):
   TipoDetalleAtencionID = models.AutoField(primary_key= True, null=False, unique=True)
@@ -19,3 +21,12 @@ class TipoDetalleAtencionModel(models.Model):
 
   class Meta:
     db_table = 'tipodetalleatencion'
+
+class RazaModel(models.Model):
+  RazaID = models.AutoField(primary_key= True, null=False, unique=True)
+  Especie = models.ForeignKey(EspecieModel, on_delete=models.CASCADE, db_column='EspecieID')
+  NombreRaza = models.CharField(max_length=50, null=False, db_column='NombreRaza')
+  Observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'Raza'

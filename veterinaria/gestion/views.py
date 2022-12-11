@@ -3,9 +3,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from .models import EspecieModel,TipoDetalleAtencionModel
-from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer
-
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel
+from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer
 
 
 class EspecieApiView(ListCreateAPIView):
@@ -38,6 +37,10 @@ class EspecieApiView(ListCreateAPIView):
             'message': 'Las especies son:',
             'content': especies_serializados.data
       })
+
+  def get_queryset(self, request: Request):
+      return EspecieModel.objects.all()
+
 
 
 class EspecieToggleApiView(RetrieveUpdateDestroyAPIView):
@@ -115,3 +118,56 @@ class TipoDetalleAtencionToggleApiView(RetrieveUpdateDestroyAPIView):
         TipoDetalleAtencion=TipoDetalleAtencionModel.objects.filter(TipoDetalleAtencionID = pk).first()
         TipoDetalleAtencion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class RazaApiView(ListCreateAPIView):
+  serializer_class = RazaSerializer
+  queryset = RazaModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear la raza',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevaRaza = informacion.save()
+      nuevaRaza_Serializada = self.serializer_class(instance = nuevaRaza)
+      
+      return Response(data = {
+        'message': 'Nueva Raza Creada exitosamente',
+        'content': nuevaRaza_Serializada.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Raza = RazaModel.objects.all()
+      Raza_Serializada = self.serializer_class(instance=Raza, many=True)
+      return Response(data={
+            'message': 'Las razas son:',
+            'content': Raza_Serializada.data
+      })
+
+class RazaToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = RazaSerializer
+    
+    def get(self, request: Request,pk):
+      Raza = RazaModel.objects.filter(RazaID = pk).first()
+      Raza_Serializado = self.serializer_class(instance=Raza)
+      return Response(Raza_Serializado.data)
+
+    def put(self, request:Request, pk: str):
+
+        Raza=RazaModel.objects.filter(RazaID = pk).first()
+        serializer=RazaSerializer(Raza,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        Raza=RazaModel.objects.filter(RazaID = pk).first()
+        Raza.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)  
