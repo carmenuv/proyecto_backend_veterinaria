@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.request import Request
 from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel
 
 class EspecieSerializer(serializers.ModelSerializer):
@@ -18,12 +19,18 @@ class RazaSerializer(serializers.ModelSerializer):
     fields = ('RazaID','Especie','NombreRaza','Observacion')
 
   def to_representation(self, instance):
-    return {
-      'RazaID': instance.RazaID,
-      'Especie' : instance.Especie.nombreEspecie,
-      'NombreRaza': instance.NombreRaza,
-      'Observacion' : instance.Observacion,
+      return {
+        'RazaID': instance.RazaID,
+        'Especie' : instance.Especie.nombreEspecie,
+        'NombreRaza': instance.NombreRaza,
+        'Observacion' : instance.Observacion,
     }
+
+class Raza2Serializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = RazaModel
+    fields = ('RazaID','Especie','NombreRaza','Observacion')
 
 class DiagnosticoSerializer(serializers.ModelSerializer):
   class Meta:

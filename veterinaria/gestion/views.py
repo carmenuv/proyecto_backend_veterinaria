@@ -4,7 +4,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel
-from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer
+from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer,Raza2Serializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer
 
 
 #Especie==========================================================================================
@@ -152,17 +152,24 @@ class RazaApiView(ListCreateAPIView):
       })
 
 class RazaToggleApiView(RetrieveUpdateDestroyAPIView):
-    serializer_class = RazaSerializer
+    serializer_class = Raza2Serializer
     
     def get(self, request: Request,pk):
       Raza = RazaModel.objects.filter(RazaID = pk).first()
       Raza_Serializado = self.serializer_class(instance=Raza)
       return Response(Raza_Serializado.data)
 
-    def put(self, request:Request, pk: str):
-
+    def patch(self, request:Request, pk: str):
         Raza=RazaModel.objects.filter(RazaID = pk).first()
-        serializer=RazaSerializer(Raza,data=request.data)
+        if Raza:
+          Raza_Serializado = self.serializer_class(instance=Raza)
+          return Response(Raza_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Raza_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request:Request, pk: str):
+        Raza=RazaModel.objects.filter(RazaID = pk).first()
+        serializer=Raza2Serializer(Raza,data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_200_OK)
