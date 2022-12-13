@@ -94,11 +94,13 @@ class TipoProductoModel(models.Model):
 
 class ProductoModel(models.Model):
   ProductoID = models.AutoField(primary_key= True, null=False, unique=True)
-  Tipoproducto = models.ForeignKey(TipoProductoModel, on_delete=models.CASCADE, db_column='TipoprodcutoID')
-  NombreProdcuto = models.CharField(max_length=250, null=False, db_column='NombreProdcuto')
-  descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
-  precioUnitario = models.FloatField(null=False, db_column='PrecioUnitario')
-  observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+  TipoProducto = models.ForeignKey(TipoProductoModel, on_delete=models.CASCADE, db_column='TipoproductoID')
+  NombreProducto = models.CharField(max_length=250, null=False, db_column='NombreProducto')
+  Descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
+  PrecioUnitario = models.FloatField(null=False, db_column='PrecioUnitario')
+  Observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
 
   class Meta:
     db_table = 'producto'
+
+

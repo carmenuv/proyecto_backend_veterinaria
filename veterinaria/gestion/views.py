@@ -3,8 +3,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
-from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer, TipoProductoSerializer
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel, ProductoModel
+from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer, TipoProductoSerializer, Raza2Serializer, ProductoSerializer, Producto2Serializer
 
 
 #Especie==========================================================================================
@@ -152,17 +152,24 @@ class RazaApiView(ListCreateAPIView):
       })
 
 class RazaToggleApiView(RetrieveUpdateDestroyAPIView):
-    serializer_class = RazaSerializer
+    serializer_class = Raza2Serializer
     
     def get(self, request: Request,pk):
       Raza = RazaModel.objects.filter(RazaID = pk).first()
       Raza_Serializado = self.serializer_class(instance=Raza)
       return Response(Raza_Serializado.data)
 
-    def put(self, request:Request, pk: str):
-
+    def patch(self, request:Request, pk: str):
         Raza=RazaModel.objects.filter(RazaID = pk).first()
-        serializer=RazaSerializer(Raza,data=request.data)
+        if Raza:
+          Raza_Serializado = self.serializer_class(instance=Raza)
+          return Response(Raza_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Raza_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request:Request, pk: str):
+        Raza=RazaModel.objects.filter(RazaID = pk).first()
+        serializer=self.serializer_class(Raza,data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_200_OK)
@@ -559,4 +566,65 @@ class TipoProductoToggleApiView(RetrieveUpdateDestroyAPIView):
     def delete(self, request:Request, pk: str):
         tipoProducto=TipoProductoModel.objects.filter(TipoProductoID = pk).first()
         tipoProducto.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+#Prodcuto==========================================================================================
+class ProductoApiView(ListCreateAPIView):
+  serializer_class = ProductoSerializer
+  queryset = ProductoModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el producto',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoProducto = informacion.save()
+      nuevoProducto_Serializado = self.serializer_class(instance = nuevoProducto)
+      
+      return Response(data = {
+        'message': 'Nuevo producto creado exitosamente',
+        'content': nuevoProducto_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Producto = ProductoModel.objects.all()
+      Producto_Serializado = self.serializer_class(instance=Producto, many=True)
+      return Response(data={
+            'message': 'Los productos son:',
+            'content': Producto_Serializado.data
+      })
+
+class ProductoToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = Producto2Serializer
+    
+    def get(self, request: Request,pk):
+      Producto = ProductoModel.objects.filter(ProductoID = pk).first()
+      Producto_Serializado = self.serializer_class(instance=Producto)
+      return Response(Producto_Serializado.data)
+
+    def patch(self, request:Request, pk: str):
+        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
+        if Producto:
+          Producto_Serializado = self.serializer_class(instance=Producto)
+          return Response(Producto_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Producto_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request:Request, pk: str):
+        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
+        serializer=self.serializer_class(Producto,data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
+        Producto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

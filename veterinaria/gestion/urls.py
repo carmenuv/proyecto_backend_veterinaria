@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView, AnalisisApiView, AnalisisToggleApiView, TipoTrabajadorApiView,TipoTrabajadorToggleApiView, TipoProductoApiView, TipoProductoToggleApiView
+from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView, AnalisisApiView, AnalisisToggleApiView, TipoTrabajadorApiView,TipoTrabajadorToggleApiView, TipoProductoApiView, TipoProductoToggleApiView, ProductoApiView, ProductoToggleApiView
 
 
 urlpatterns = [
@@ -29,4 +29,7 @@ urlpatterns = [
 
     path('registro-tipoproducto/', TipoProductoApiView.as_view()),
     path('actualizar-tipoproducto/<str:pk>', TipoProductoToggleApiView.as_view()),
+
+    path('registro-producto/', ProductoApiView.as_view()),
+    path('actualizar-producto/<str:pk>', ProductoToggleApiView.as_view()),
 ]
