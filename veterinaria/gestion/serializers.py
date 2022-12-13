@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel, ProductoModel
 
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
@@ -24,6 +24,12 @@ class RazaSerializer(serializers.ModelSerializer):
       'NombreRaza': instance.NombreRaza,
       'Observacion' : instance.Observacion,
     }
+
+class Raza2Serializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = RazaModel
+    fields = ('RazaID','Especie','NombreRaza','Observacion')
 
 class DiagnosticoSerializer(serializers.ModelSerializer):
   class Meta:
