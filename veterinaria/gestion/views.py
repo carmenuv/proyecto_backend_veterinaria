@@ -3,8 +3,13 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
+<<<<<<< HEAD
 from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel
 from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer,Raza2Serializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer
+=======
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
+from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer, TipoProductoSerializer
+>>>>>>> develop
 
 
 #Especie==========================================================================================
@@ -510,4 +515,60 @@ class TipoTrabajadorToggleApiView(RetrieveUpdateDestroyAPIView):
     def delete(self, request:Request, pk: str):
         tipoTrabajador=TipoTrabajadorModel.objects.filter(TipoTrabajadorID = pk).first()
         tipoTrabajador.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT) 
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+#TipoProducto========================================================================================== 
+class TipoProductoApiView(ListCreateAPIView):
+  serializer_class = TipoProductoSerializer
+  queryset = TipoProductoModel.objects.all()
+
+  def get(self,request:Request):
+      
+    tipoProducto = TipoProductoModel.objects.all()
+    # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
+    tipoProducto_serializados = self.serializer_class(instance=tipoProducto, many=True)
+
+    return Response(data={
+        'message': 'Los tipos de producto son:',
+        'content': tipoProducto_serializados.data
+    })
+
+  def post(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el tipo de producto',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoTipoProducto = informacion.save()
+      nuevoTipoProductoSerializado = self.serializer_class(instance = nuevoTipoProducto)
+      
+      return Response(data = {
+        'message': 'Tipo producto creado exitosamente',
+        'content': nuevoTipoProductoSerializado.data
+      },status = status.HTTP_201_CREATED)
+
+class TipoProductoToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = TipoProductoSerializer
+    
+    def get(self, request: Request,pk):
+      TipoProductos = TipoProductoModel.objects.filter(TipoProductoID = pk).first()
+      tipoProductos_serializados = self.serializer_class(instance=TipoProductos)
+      return Response(tipoProductos_serializados.data)
+
+    def put(self, request:Request, pk: str):
+
+        tipoProducto=TipoProductoModel.objects.filter(TipoProductoID = pk).first()
+        serializer=TipoProductoSerializer(tipoProducto,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        tipoProducto=TipoProductoModel.objects.filter(TipoProductoID = pk).first()
+        tipoProducto.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

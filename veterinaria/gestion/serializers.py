@@ -1,6 +1,10 @@
 from rest_framework import serializers
+<<<<<<< HEAD
 from rest_framework.request import Request
 from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel
+=======
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
+>>>>>>> develop
 
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
@@ -22,7 +26,7 @@ class RazaSerializer(serializers.ModelSerializer):
       return {
         'RazaID': instance.RazaID,
         'Especie' : instance.Especie.nombreEspecie,
-        'NombreRaza': instance.NombreRaza,
+        'Nombre': instance.NombreRaza,
         'Observacion' : instance.Observacion,
     }
 
@@ -60,4 +64,9 @@ class AnalisisSerializer(serializers.ModelSerializer):
 class TipoTrabajadorSerializer(serializers.ModelSerializer):
   class Meta:
     model = TipoTrabajadorModel
+    fields = '__all__'
+
+class TipoProductoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = TipoProductoModel
     fields = '__all__'

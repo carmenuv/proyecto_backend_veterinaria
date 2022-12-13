@@ -82,18 +82,31 @@ class TipoTrabajadorModel(models.Model):
   class Meta:
     db_table = 'tipotrabajador'
 
-# class ClienteTiendaModel(models.Model):
-#   ClienteID = models.AutoField(primary_key= True, null=False, unique=True)
-#   TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
-#   Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
-#   Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
-#   ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')
-#   ApeMaterno = models.CharField(max_length=100, null=False, db_column='ApeMaterno')
-#   NroContacto = models.CharField(max_length=12, null=False, db_column='NroContacto')
-#   NroAuxiliar = models.CharField(max_length=12, null=True, db_column='NroAuxiliar')
-#   Direccion = models.CharField(max_length=250, null=False, db_column='Direccion')
-#   Correo = models.CharField(max_length=250, null=True, db_column='Correo')
-#   observacion = models.TextField(null=True, db_column='Observacion')
 
-#   class Meta:
-#     db_table = 'Cliente'
+
+class TipoProductoModel(models.Model):
+  TipoProductoID = models.AutoField(primary_key=True, null=False, unique=True)
+  nombreTipoProducto = models.CharField(max_length=250, null=False, db_column='NombreTipoProducto')
+  descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
+  observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'tipoproducto'
+
+
+class ClienteTiendaModel(models.Model):
+  ClienteID = models.AutoField(primary_key= True, null=False, unique=True)
+  TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
+  Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
+  Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
+  ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')
+  ApeMaterno = models.CharField(max_length=100, null=False, db_column='ApeMaterno')
+  NroContacto = models.CharField(max_length=12, null=False, db_column='NroContacto')
+  NroAuxiliar = models.CharField(max_length=12, null=True, db_column='NroAuxiliar')
+  Direccion = models.CharField(max_length=250, null=False, db_column='Direccion')
+  Correo = models.CharField(max_length=250, null=True, db_column='Correo')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'Cliente'
+
