@@ -8,12 +8,12 @@ class EspecieSerializer(serializers.ModelSerializer):
     model = EspecieModel
     fields = '__all__'
 
-class AnalisisSerializer(serializers.AnalisisModel):
+class AnalisisSerializer(serializers.ModelSerializer):
   class Meta:
     model = AnalisisModel
     fields='__all__'
 
-class TipoTrabajadorSerializer(serializers.TipoTrabajadorModel):
+class TipoTrabajadorSerializer(serializers.ModelSerializer):
   class Meta:
     model = TipoTrabajadorModel
     fields = '__all__'
