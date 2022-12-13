@@ -168,7 +168,7 @@ class RazaToggleApiView(RetrieveUpdateDestroyAPIView):
 
     def put(self, request:Request, pk: str):
         Raza=RazaModel.objects.filter(RazaID = pk).first()
-        serializer=Raza2Serializer(Raza,data=request.data)
+        serializer=self.serializer_class(Raza,data=request.data)
 
         if serializer.is_valid():
             serializer.save()
