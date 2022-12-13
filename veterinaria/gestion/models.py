@@ -79,3 +79,12 @@ class TipoTrabajadorModel(models.Model):
 
   class Meta:
     db_table = 'tipotrabajador'
+
+class TipoProductoModel(models.Model):
+  TipoProductoID = models.AutoField(primary_key=True, null=False, unique=True)
+  nombreTipoProducto = models.CharField(max_length=250, null=False, db_column='NombreTipoProducto')
+  descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
+  observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'tipoproducto'
