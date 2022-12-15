@@ -89,7 +89,7 @@ class TipoProductoModel(models.Model):
   class Meta:
     db_table = 'tipoproducto'
 
-
+#ALMACEN
 class AlmacenModel(models.Model):
   AlmacenID = models.AutoFiel(primary_key = True, null = False, unique = True)
   ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
@@ -104,7 +104,8 @@ class AlmacenModel(models.Model):
 #dentro de ProductoModel
   def __str__(self):
     return self.Cantidad
-
+    
+#CITAS
 class CitaModel(models.Model):
   CitasID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column= 'ProductoID', null=False)
   AreatrabID = models.ForeignKey(AreaServicioModel, on_delete=models.CASCADE, db_column='AreaID', null= False)
