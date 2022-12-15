@@ -90,7 +90,7 @@ class TipoProductoModel(models.Model):
     db_table = 'tipoproducto'
 
 
-class AlmacenModelo(models.Model):
+class AlmacenModel(models.Model):
   AlmacenID = models.AutoFiel(primary_key = True, null = False, unique = True)
   ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
   Cantidad = models.FloatField(null=False)

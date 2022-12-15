@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
-
+from .models import *
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
     model = EspecieModel
@@ -59,3 +59,24 @@ class TipoProductoSerializer(serializers.ModelSerializer):
   class Meta:
     model = TipoProductoModel
     fields = '__all__'
+
+
+class AlmacenSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+  def to_representation(self, instance):
+    return {
+      'AlmacenID': instance.AlmacenID,
+      'ProductoID' : instance.ProductoID,
+      'Cantidad': instance.Cantidad,
+      'FechaIngreso' : instance.FechaIngreso,
+      'FechaVencimiento' : instance.FechaVencimiento,
+      'Observacion' : instance.Observacion,
+    }
+
+class Almacen2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
