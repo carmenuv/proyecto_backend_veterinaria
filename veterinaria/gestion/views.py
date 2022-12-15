@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
 from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer, TipoProductoSerializer
-
+from .models import *
+from .serializers import *
 
 #Especie==========================================================================================
 class EspecieApiView(ListCreateAPIView):
@@ -506,3 +507,129 @@ class TipoTrabajadorToggleApiView(RetrieveUpdateDestroyAPIView):
       tipoTrabajador=TipoTrabajadorModel.objects.filter(TipoTrabajadorID = pk).first()
       tipoTrabajador.delete()
       return Response(status=status.HTTP_204_NO_CONTENT) 
+
+
+
+#ALMACEN==========================================================================================
+class AlmacenApiView(ListCreateAPIView):
+  serializer_class = AlmacenSerializer
+  queryset = AlmacenModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el almacen',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoAlmacen = informacion.save()
+      nuevoAlmacen_Serializado = self.serializer_class(instance = nuevoAlmacen)
+      
+      return Response(data = {
+        'message': 'Nuevo almacen creado exitosamente',
+        'content': nuevoAlmacen_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Almacen = AlmacenModel.objects.all()
+      Almacen_Serializado = self.serializer_class(instance=Almacen, many=True)
+      return Response(data={
+            'message': 'Los almacenes son:',
+            'content': Almacen_Serializado.data
+      })
+
+class AlmacenToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = Almacen2Serializer
+    
+    def get(self, request: Request,pk):
+      Almacen = AlmacenModel.objects.filter(AlmacenID = pk).first()
+      Almacen_Serializado = self.serializer_class(instance=Almacen)
+      return Response(Almacen_Serializado.data)
+
+    def patch(self, request:Request, pk: str):
+        Almacen=AlmacenModel.objects.filter(AlmacenID = pk).first()
+        if Almacen:
+          Almacen_Serializado = self.serializer_class(instance=Almacen)
+          return Response(Almacen_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Almacen_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request:Request, pk: str):
+        Almacen=AlmacenModel.objects.filter(AlmacenID = pk).first()
+        serializer=self.serializer_class(Almacen,data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        Almacen=AlmacenModel.objects.filter(AlmacenID = pk).first()
+        Almacen.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+#CITAS
+#Prodcuto==========================================================================================
+class CitaApiView(ListCreateAPIView):
+  serializer_class = CitaSerializer
+  queryset = CitaModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear la cita',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevaCita = informacion.save()
+      nuevaCita_Serializado = self.serializer_class(instance = nuevaCita)
+      
+      return Response(data = {
+        'message': 'Nuevo producto creado exitosamente',
+        'content': nuevaCita_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Cita = CitaModel.objects.all()
+      Cita_Serializado = self.serializer_class(instance=Cita, many=True)
+      return Response(data={
+            'message': 'Las citas son:',
+            'content': Cita_Serializado.data
+      })
+
+class CitaToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = Cita2Serializer
+    
+    def get(self, request: Request,pk):
+      Cita = CitaModel.objects.filter(CitasID = pk).first()
+      Cita_Serializado = self.serializer_class(instance=Cita)
+      return Response(Cita_Serializado.data)
+
+    def patch(self, request:Request, pk: str):
+        Cita=CitaModel.objects.filter(CitasID = pk).first()
+        if Cita:
+          Cita_Serializado = self.serializer_class(instance=Cita)
+          return Response(Cita_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Cita_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request:Request, pk: str):
+        Cita=CitaModel.objects.filter(ProductoID = pk).first()
+        serializer=self.serializer_class(Cita,data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        Cita=CitaModel.objects.filter(CitasID = pk).first()
+        Cita.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
