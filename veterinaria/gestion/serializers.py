@@ -80,3 +80,24 @@ class Almacen2Serializer(serializers.ModelSerializer):
   class Meta:
     model = AlmacenModel
     fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+
+class CitaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+
+  def to_representation(self, instance):
+    return {
+      'CitasID': instance.AlmacenID,
+      'AreatrabID' : instance.ProductoID,
+      'ClienteID': instance.Cantidad,
+      'ServicioID' : instance.FechaIngreso,
+      'PacienteID' : instance.FechaVencimiento,
+      
+    }
+
+class Cita2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
