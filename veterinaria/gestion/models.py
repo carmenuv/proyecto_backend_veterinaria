@@ -101,9 +101,13 @@ class AlmacenModelo(models.Model):
   class Meta:
     db_table = 'almacen'
 
+#dentro de ProductoModel
+  def __str__(self):
+    return self.Cantidad
+
 class CitaModel(models.Model):
   CitasID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column= 'ProductoID', null=False)
-  AreatrabID = models.ForeignKey(AreaModel, on_delete=models.CASCADE, db_column='AreaID', null= False)
+  AreatrabID = models.ForeignKey(AreaServicioModel, on_delete=models.CASCADE, db_column='AreaID', null= False)
   ClienteID = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID', null=False)
   ServicioID = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID', null= False)
   PacienteID = models.ForeignKey(PacienteModel, on_delete=models.CASCADE, db_column='PacienteID', null=False)
