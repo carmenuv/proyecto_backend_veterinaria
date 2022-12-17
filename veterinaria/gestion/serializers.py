@@ -1,10 +1,6 @@
+
 from rest_framework import serializers
-<<<<<<< HEAD
-from rest_framework.request import Request
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel
-=======
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
->>>>>>> develop
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel,ClienteModel,TrabajadorModel
 
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
@@ -70,3 +66,76 @@ class TipoProductoSerializer(serializers.ModelSerializer):
   class Meta:
     model = TipoProductoModel
     fields = '__all__'
+
+class ClienteSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = ClienteModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+  def to_representation(self, instance):
+      return {
+        'ID': instance.ClienteID,
+        'Tipo de Documento' : instance.TipoDocumento.nombreDocumento,
+        'Documento': instance.Documento,
+        'Nombre Cliente': instance.Nombre,
+        'Apellido Paterno': instance.ApePaterno,
+        'Apellido Materno': instance.ApeMaterno,
+        'NroContacto': instance.NroContacto,
+        'NroAuxiliar': instance.NroAuxiliar,
+        'Direccion': instance.Direccion,
+        'E-mail': instance.Correo,
+        'Estado': instance.Estado,
+        'Observacion' : instance.observacion,
+    }
+
+class Cliente2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = ClienteModel
+    fields = '__all__'
+    extra_kwargs = {
+            'Estado': {
+                'read_only': True
+            }
+        }
+
+class TrabajadorSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = TrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+  def to_representation(self, instance):
+      return {
+        'ID': instance.TrabajadorID,
+        'Tipo de Trabajador' : instance.TipoTrabajador.nombreTrabajo,
+        'Tipo de Documento' : instance.TipoDocumento.nombreDocumento,
+        'Documento': instance.Documento,
+        'Nombre Cliente': instance.Nombre,
+        'Apellido Paterno': instance.ApePaterno,
+        'Apellido Materno': instance.ApeMaterno,
+        'NroContacto': instance.NroContacto,
+        'NroAuxiliar': instance.NroAuxiliar,
+        'Direccion': instance.Direccion,
+        'E-mail': instance.Correo,
+        'Estado': instance.Estado,
+        'Observacion' : instance.observacion,
+    }
+
+class Trabajador2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = TrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
