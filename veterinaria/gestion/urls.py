@@ -36,4 +36,5 @@ urlpatterns = [
     path('registrar-trabajador/', TrabajadorApiView.as_view()),
     path('actualizar-trabajador/<str:pk>', TrabajadorToggleApiView.as_view()),
     path('flltrar-trabajador/', WorkerWithFilters.as_view()),
+
 ]
