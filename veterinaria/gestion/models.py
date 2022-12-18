@@ -133,3 +133,33 @@ class TrabajadorModel(models.Model):
 
   class Meta:
     db_table = 'Trabajador'
+
+#tablas intermedias angelsanchez----------------------------------------------------------------
+
+class servicioTrabajadorModel(models.Model):
+  SerTrabID = models.AutoField(primary_key=True, null=False, unique=True)
+  Servicio = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID')
+  Trabajador = models.ForeignKey(TrabajadorModel, on_delete=models.CASCADE, db_column='TrabajadorID')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'servicioTrabajador'
+
+class areaServicioModel(models.Model):
+  AreaTrabID = models.AutoField(primary_key= True, null=False, unique=True)
+  Area = models.ForeignKey(AreaModel, on_delete=models.CASCADE, db_column='AreaID')
+  ServTrab = models.ForeignKey(servicioTrabajadorModel, on_delete=models.CASCADE, db_column='ServTrabID')
+  Fecha = models.DateField(auto_now_add=True, null=False)
+  horaInicio = models.DateTimeField(null=True)
+  horaFin = models.DateTimeField(null=True)
+  cupo = models.AutoField(null=False)
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'areaServicio'
+
+
+
+
+
+
