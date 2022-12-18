@@ -43,8 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters', 
+    'django_filters',
     'gestion',
+    'drf_yasg',
     'corsheaders', # para trabajar con el uso de los cors
     'rest_framework', # para django rest-framework pueda devolver la informacion por el navegador usando css y js
 ]

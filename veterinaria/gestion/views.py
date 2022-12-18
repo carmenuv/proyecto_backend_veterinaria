@@ -3,10 +3,9 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status, filters
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel, TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel,ClienteModel,TrabajadorModel
-from .serializers import EspecieSerializer,TipoDetalleAtencionSerializer,RazaSerializer, DiagnosticoSerializer, ServicioSerializer, AreaSerializer, TipoDocumentoSerializer, AnalisisSerializer, TipoTrabajadorSerializer, TipoProductoSerializer,Raza2Serializer,ClienteSerializer,Cliente2Serializer,TrabajadorSerializer,Trabajador2Serializer
+from .models import *
+from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
-
 
 
 #Especie==========================================================================================
@@ -659,6 +658,7 @@ class ClientWithFilters(ListAPIView):
 
 class TrabajadorApiView(ListCreateAPIView):
   serializer_class = TrabajadorSerializer
+
   queryset = TrabajadorModel.objects.all()
 
   def create(self, request:Request):
