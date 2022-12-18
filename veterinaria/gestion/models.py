@@ -33,7 +33,7 @@ class RazaModel(models.Model):
 
 class DiagnosticoModel(models.Model):
   DiagnosticoID = models.AutoField(primary_key=True, null=False, unique=True)
-  detalleDiagnostico = models.TextField(null=False, db_column='DetalleDiagnostico')
+  detalleDiagnostico = models.TextField(max_length=50,null=False, db_column='DetalleDiagnostico')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -63,10 +63,12 @@ class TipoDocumentoModel(models.Model):
 
   class Meta:
     db_table = 'tipodocumento'
+  def __str__(self):
+    return self.nombreDocumento
 
 class AnalisisModel(models.Model):
   AnalisisID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreAnalisis = models.TextField(null=False, db_column='NombreAnalisis')
+  nombreAnalisis = models.TextField(max_length=100,null=False, db_column='NombreAnalisis')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -79,12 +81,55 @@ class TipoTrabajadorModel(models.Model):
 
   class Meta:
     db_table = 'tipotrabajador'
+  def __str__(self):
+    return self.nombreTrabajo
+
 
 class TipoProductoModel(models.Model):
   TipoProductoID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreTipoProducto = models.CharField(max_length=250, null=False, db_column='NombreTipoProducto')
+  nombreTipoProducto = models.CharField(max_length=100, null=False, db_column='NombreTipoProducto')
   descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
-  observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+  observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
     db_table = 'tipoproducto'
+
+ESTADOCHOICE = (
+    ('1', 'HABILITADO'),
+    ('2', 'DESHABILITADO')
+)
+
+class ClienteModel(models.Model):
+  ClienteID = models.AutoField(primary_key= True, null=False, unique=True)
+  TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
+  Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
+  Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
+  ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')
+  ApeMaterno = models.CharField(max_length=100, null=False, db_column='ApeMaterno')
+  NroContacto = models.CharField(max_length=12, null=False, db_column='NroContacto')
+  NroAuxiliar = models.CharField(max_length=12, null=True, db_column='NroAuxiliar')
+  Direccion = models.CharField(max_length=250, null=False, db_column='Direccion')
+  Correo = models.CharField(max_length=250, null=True, db_column='Correo')
+  Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'Cliente'
+
+class TrabajadorModel(models.Model):
+  TrabajadorID = models.AutoField(primary_key= True, null=False, unique=True)
+  TipoTrabajador = models.ForeignKey(TipoTrabajadorModel, on_delete=models.CASCADE, db_column='TipoTrabajadorID')
+  TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
+  Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
+  Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
+  ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')
+  ApeMaterno = models.CharField(max_length=100, null=False, db_column='ApeMaterno')
+  NroContacto = models.CharField(max_length=12, null=False, db_column='NroContacto')
+  NroAuxiliar = models.CharField(max_length=12, null=True, db_column='NroAuxiliar')
+  Direccion = models.CharField(max_length=250, null=False, db_column='Direccion')
+  Correo = models.CharField(max_length=250, null=True, db_column='Correo')
+  Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'Trabajador'
