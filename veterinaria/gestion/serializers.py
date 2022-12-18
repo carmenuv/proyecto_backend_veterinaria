@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel,ClienteModel,TrabajadorModel
+from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel,ClienteModel,TrabajadorModel,servicioTrabajadorModel,areaServicioModel
 
 
 
@@ -134,6 +134,71 @@ class TrabajadorSerializer(serializers.ModelSerializer):
 class Trabajador2Serializer(serializers.ModelSerializer):
   class Meta:
     model = TrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+#serilizadores angel------------------------------------------------
+
+class servicioTrabajadorSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = servicioTrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+  def to_representation(self, instance):
+      return {
+        'ID': instance.ServTrabID,
+        'Servicio' : instance.Servicio.nombreServicio,
+        'Trabajador' : instance.Trabajador.Trabajador,
+        'Observacion' : instance.observacion,
+    }
+
+class servicioTrabajador2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = servicioTrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+
+class areaServicioSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = areaServicioModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+  def to_representation(self, instance):
+      return {
+        'ID': instance.Areatrab,
+
+        'Area' : instance.Area,
+        'Servicios de Trabajador' : instance.ServTra,
+
+        'Fecha':instance.Fecha,
+        'hora de inicio': instance.horainicio,
+        'hora de fin': instance.horafin,
+        'cupo': instance.Cupo,
+        'Observacion' : instance.observacion,
+    }
+
+class areaServicio2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = areaServicioModel
     fields = '__all__'
     extra_kwargs = {
               'Estado': {
