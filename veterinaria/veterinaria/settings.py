@@ -43,9 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'gestion',
     'corsheaders', # para trabajar con el uso de los cors
     'rest_framework', # para django rest-framework pueda devolver la informacion por el navegador usando css y js
+    'django_filters',
+    '' # para filtar los registros de los trabajdores
+
+
 ]
 
 MIDDLEWARE = [
