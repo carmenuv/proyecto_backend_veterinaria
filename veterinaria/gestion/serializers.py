@@ -156,8 +156,8 @@ class servicioTrabajadorSerializer(serializers.ModelSerializer):
   def to_representation(self, instance):
       return {
         'ID': instance.ServTrabID,
-        'Servicio' : instance.Servicio.nombreServicio,
-        'Trabajador' : instance.Trabajador.Trabajador,
+        'Servicio' : instance.Servicio.NombreServicio,
+        'Trabajador' : instance.Trabajador.Documento,
         'Observacion' : instance.observacion,
     }
 
@@ -186,8 +186,8 @@ class areaServicioSerializer(serializers.ModelSerializer):
       return {
         'ID': instance.Areatrab,
 
-        'Area' : instance.Area,
-        'Servicios de Trabajador' : instance.ServTra,
+        'Area' : instance.Area.NombreArea,
+        'ServTra' : instance.ServTra.TrabajadorID,
 
         'Fecha':instance.Fecha,
         'hora de inicio': instance.horainicio,
