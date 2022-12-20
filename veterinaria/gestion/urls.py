@@ -1,7 +1,5 @@
 from django.urls import path
-
-from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView, AnalisisApiView, AnalisisToggleApiView, TipoTrabajadorApiView,TipoTrabajadorToggleApiView, TipoProductoApiView, TipoProductoToggleApiView
-
+from .views import *
 
 urlpatterns = [
     # el metodo as_view convierte la clase en una vista para que pueda ser consumida por Django
@@ -29,4 +27,19 @@ urlpatterns = [
 
     path('registro-tipoproducto/', TipoProductoApiView.as_view()),
     path('actualizar-tipoproducto/<str:pk>', TipoProductoToggleApiView.as_view()),
+    path('registro-producto/', ProductoApiView.as_view()),
+    path('actualizar-producto/<str:pk>', ProductoToggleApiView.as_view()),
+
+    path('registrar-cliente/', ClienteApiView.as_view()),
+    path('actualizar-cliente/<str:pk>', ClienteToggleApiView.as_view()),
+    path('flltrar-cliente/', ClientWithFilters.as_view()),
+
+    path('registrar-trabajador/', TrabajadorApiView.as_view()),
+    path('actualizar-trabajador/<str:pk>', TrabajadorToggleApiView.as_view()),
+    path('flltrar-trabajador/', WorkerWithFilters.as_view()),
+
+    path('registro-almacen/', AlmacenApiView.as_view()),
+    path('actualizar-almacen/<str:pk>', AlmacenToggleApiView.as_view()),
+    path('registro-cita/', CitaApiView.as_view()),
+    path('actualizar-cita/<str:pk>', CitaToggleApiView.as_view()),
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel
+from .models import *
 
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
@@ -18,11 +18,11 @@ class RazaSerializer(serializers.ModelSerializer):
     fields = ('RazaID','Especie','NombreRaza','Observacion')
 
   def to_representation(self, instance):
-    return {
-      'RazaID': instance.RazaID,
-      'Especie' : instance.Especie.nombreEspecie,
-      'NombreRaza': instance.NombreRaza,
-      'Observacion' : instance.Observacion,
+      return {
+        'RazaID': instance.RazaID,
+        'Especie' : instance.Especie.nombreEspecie,
+        'Nombre': instance.NombreRaza,
+        'Observacion' : instance.Observacion,
     }
 
 class Raza2Serializer(serializers.ModelSerializer):
@@ -65,3 +65,137 @@ class TipoProductoSerializer(serializers.ModelSerializer):
   class Meta:
     model = TipoProductoModel
     fields = '__all__'
+
+class ProductoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = ProductoModel
+    fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
+
+  def to_representation(self, instance):
+    return {
+      'ProductoID': instance.ProductoID,
+      'TipoProducto' : instance.TipoProducto.Tipoproducto,
+      'NombreProducto': instance.NombreProducto,
+      'Descripcion' : instance.Descipcion,
+      'PrecioUnitario' : instance.PrecioUnitario,
+      'Observacion' : instance.Observacion,
+    }
+
+class Producto2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = ProductoModel
+    fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
+
+class ClienteSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = ClienteModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+  def to_representation(self, instance):
+      return {
+        'ID': instance.ClienteID,
+        'Tipo de Documento' : instance.TipoDocumento.nombreDocumento,
+        'Documento': instance.Documento,
+        'Nombre Cliente': instance.Nombre,
+        'Apellido Paterno': instance.ApePaterno,
+        'Apellido Materno': instance.ApeMaterno,
+        'NroContacto': instance.NroContacto,
+        'NroAuxiliar': instance.NroAuxiliar,
+        'Direccion': instance.Direccion,
+        'E-mail': instance.Correo,
+        'Estado': instance.Estado,
+        'Observacion' : instance.observacion,
+    }
+
+class Cliente2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = ClienteModel
+    fields = '__all__'
+    extra_kwargs = {
+            'Estado': {
+                'read_only': True
+            }
+        }
+
+class TrabajadorSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = TrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+  def to_representation(self, instance):
+      return {
+        'ID': instance.TrabajadorID,
+        'Tipo de Trabajador' : instance.TipoTrabajador.nombreTrabajo,
+        'Tipo de Documento' : instance.TipoDocumento.nombreDocumento,
+        'Documento': instance.Documento,
+        'Nombre Cliente': instance.Nombre,
+        'Apellido Paterno': instance.ApePaterno,
+        'Apellido Materno': instance.ApeMaterno,
+        'NroContacto': instance.NroContacto,
+        'NroAuxiliar': instance.NroAuxiliar,
+        'Direccion': instance.Direccion,
+        'E-mail': instance.Correo,
+        'Estado': instance.Estado,
+        'Observacion' : instance.observacion,
+    }
+
+class Trabajador2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = TrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+class AlmacenSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+  def to_representation(self, instance):
+    return {
+      'AlmacenID': instance.AlmacenID,
+      'ProductoID' : instance.ProductoID,
+      'Cantidad': instance.Cantidad,
+      'FechaIngreso' : instance.FechaIngreso,
+      'FechaVencimiento' : instance.FechaVencimiento,
+      'Observacion' : instance.Observacion,
+    }
+
+class Almacen2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+
+class CitaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+
+  def to_representation(self, instance):
+    return {
+      'CitasID': instance.AlmacenID,
+      'AreatrabID' : instance.ProductoID,
+      'ClienteID': instance.Cantidad,
+      'ServicioID' : instance.FechaIngreso,
+      'PacienteID' : instance.FechaVencimiento,
+      
+    }
+
+class Cita2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
