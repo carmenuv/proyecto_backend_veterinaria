@@ -76,7 +76,7 @@ class ProductoSerializer(serializers.ModelSerializer):
       'ProductoID': instance.ProductoID,
       'TipoProducto' : instance.TipoProducto.Tipoproducto,
       'NombreProducto': instance.NombreProducto,
-      'Descripcion' : instance.Descipcion,
+      'Descripcion' : instance.Descripcion,
       'PrecioUnitario' : instance.PrecioUnitario,
       'Observacion' : instance.Observacion,
     }
