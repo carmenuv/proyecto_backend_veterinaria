@@ -46,6 +46,8 @@ class ServicioModel(models.Model):
 
   class Meta:
     db_table = 'servicio'
+  def __str__(self):
+    return self.nombreServicio
 
 class AreaModel(models.Model):
   AreaID = models.AutoField(primary_key= True, null=False, unique=True)
@@ -55,6 +57,8 @@ class AreaModel(models.Model):
 
   class Meta:
     db_table = 'area'
+  def __str__(self):
+    return self.nombreArea
 
 class TipoDocumentoModel(models.Model):
   TipoDocumentoID = models.AutoField(primary_key= True, null=False, unique=True)
@@ -133,6 +137,8 @@ class TrabajadorModel(models.Model):
 
   class Meta:
     db_table = 'Trabajador'
+  def __str__(self):
+    return (self.Nombre+" "+self.ApePaterno+" "+self.ApeMaterno)
 
 #tablas intermedias angelsanchez----------------------------------------------------------------
 
@@ -144,14 +150,16 @@ class servicioTrabajadorModel(models.Model):
 
   class Meta:
     db_table = 'servicioTrabajador'
+  def __str__(self):
+    return(self.Servicio.nombreServicio+" "+self.Trabajador.ApePaterno +" "+self.Trabajador.ApeMaterno)
 
 class areaServicioModel(models.Model):
   AreaTrabID = models.AutoField(primary_key= True, null=False, unique=True)
   Area = models.ForeignKey(AreaModel, on_delete=models.CASCADE, db_column='AreaID')
   ServTrab = models.ForeignKey(servicioTrabajadorModel, on_delete=models.CASCADE, db_column='ServTrabID')
-  Fecha = models.DateField(auto_now_add=True, null=False)
-  horaInicio = models.DateTimeField(null=True)
-  horaFin = models.DateTimeField(null=True)
+  Fecha = models.DateField(auto_now_add=False, null=False)
+  horaInicio = models.DateTimeField(null=False)
+  horaFin = models.DateTimeField(null=False)
   cupo = models.AutoField(null=False)
   observacion = models.TextField(null=True, db_column='Observacion')
 

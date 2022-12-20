@@ -1,6 +1,6 @@
 from django.urls import path,include
 
-from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,ClienteToggleApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView, AnalisisApiView, AnalisisToggleApiView, TipoTrabajadorApiView,TipoTrabajadorToggleApiView, TipoProductoApiView, TipoProductoToggleApiView,ClienteApiView,ClientWithFilters, TrabajadorApiView,TrabajadorToggleApiView,WorkerWithFilters
+from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,ClienteToggleApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView, AnalisisApiView, AnalisisToggleApiView, TipoTrabajadorApiView,TipoTrabajadorToggleApiView, TipoProductoApiView, TipoProductoToggleApiView,ClienteApiView,ClientWithFilters, TrabajadorApiView,TrabajadorToggleApiView,WorkerWithFilters,AreaServicioApiView,AreaServicioToggleApiView,ServicioTrabajadorApiView,ServicioTrabajadorToggleApiView
 
 urlpatterns = [
     # el metodo as_view convierte la clase en una vista para que pueda ser consumida por Django
@@ -36,5 +36,12 @@ urlpatterns = [
     path('registrar-trabajador/', TrabajadorApiView.as_view()),
     path('actualizar-trabajador/<str:pk>', TrabajadorToggleApiView.as_view()),
     path('flltrar-trabajador/', WorkerWithFilters.as_view()),
+
+    path('registrar-area-servicio/',AreaServicioApiView .as_view()),
+    path('actualizar-area-servicio/<str:pk>', AreaServicioToggleApiView.as_view()),
+    
+    path('registrar-servicio-trabajador/', ServicioTrabajadorApiView.as_view()),
+    path('actualizar-servicio-trabajador/<str:pk>', ServicioToggleApiView.as_view()),
+  
 
 ]

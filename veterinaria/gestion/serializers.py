@@ -187,7 +187,7 @@ class areaServicioSerializer(serializers.ModelSerializer):
         'ID': instance.Areatrab,
 
         'Area' : instance.Area.NombreArea,
-        'ServTra' : instance.ServTra.TrabajadorID,
+        'ServTra' : instance.Servicio_Trabajador.ServicioID,
 
         'Fecha':instance.Fecha,
         'hora de inicio': instance.horainicio,

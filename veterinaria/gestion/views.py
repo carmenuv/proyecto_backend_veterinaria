@@ -741,4 +741,119 @@ class WorkerWithFilters(ListAPIView):
       ordering_fields = ['Documento', 'Nombre','ApePaterno','ApeMaterno','NroContacto','Direccion','Correo','observacion']
       ordering = ['ApePaterno']
 
+#Area- Servicio, views Angel---------------------------------------------
+
+class AreaServicioApiView(ListCreateAPIView):
+  serializer_class = areaServicioSerializer
+  queryset = areaServicioModel.objects.all()
+
+  def post(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el area servicio',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoAreaServicio = informacion.save()
+      nuevaAreaServicioSerializado = self.serializer_class(instance = nuevoAreaServicio)
       
+      return Response(data = {
+        'message': 'Documento creado exitosamente',
+        'content': nuevaAreaServicioSerializado.data
+      },status = status.HTTP_201_CREATED)
+
+  def get(self, request: Request):
+        
+        areaServicio = areaServicioModel.objects.all()
+        # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
+        areaServicio_serializados = self.serializer_class(instance=areaServicio, many=True)
+
+        return Response(data={
+            'message': 'Las areas de servicio son:',
+            'content': areaServicio_serializados.data
+        }) 
+
+class AreaServicioToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = areaServicioModel
+    
+    def get(self, request: Request,pk):
+      AreaServicio = areaServicioModel.objects.filter(AreatrabID = pk).first()
+      AreaServicio_serializados = self.serializer_class(instance=AreaServicio)
+      return Response(AreaServicio_serializados.data)
+
+    def put(self, request:Request, pk: str):
+
+        areaServicio = areaServicioModel.objects.filter(AreatrabID = pk).first()
+        serializer=areaServicioSerializer(areaServicio,data=request.data)
+        if serializer.is_valid():
+          serializer.save()
+          return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        areaServicio=areaServicioModel.objects.filter(AreatrabID= pk).first()
+        areaServicio.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+#Servicio-Trabajador, views Angel---------------------------------------------
+
+class ServicioTrabajadorApiView(ListCreateAPIView):
+  serializer_class = servicioTrabajadorSerializer
+  queryset = servicioTrabajadorModel.objects.all()
+
+  def post(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el servicio del trabajador',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      ServicioTrabajador = informacion.save()
+      nuevoServicioTrabajadorSerializado = self.serializer_class(instance = ServicioTrabajador)
+      
+      return Response(data = {
+        'message': 'Documento creado exitosamente',
+        'content': nuevoServicioTrabajadorSerializado.data
+      },status = status.HTTP_201_CREATED)
+
+  def get(self, request: Request):
+        
+        ServicioTrabajador = servicioTrabajadorModel.objects.all()
+        # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
+        ServicioTrabajador_serializados = self.serializer_class(instance=ServicioTrabajador, many=True)
+
+        return Response(data={
+            'message': 'Las areas de servicio son:',
+            'content': ServicioTrabajador_serializados.data
+        }) 
+
+class ServicioTrabajadorToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = servicioTrabajadorModel
+    
+    def get(self, request: Request,pk):
+      ServicioTrabajador = servicioTrabajadorModel.objects.filter(ServTrabID = pk).first()
+      ServicioTrabajador_serializados = self.serializer_class(instance=ServicioTrabajador)
+      return Response(ServicioTrabajador_serializados.data)
+
+    def put(self, request:Request, pk: str):
+
+        ServicioTrabajador = servicioTrabajadorModel.objects.filter(ServTrabID = pk).first()
+        serializer=areaServicioSerializer(ServicioTrabajador,data=request.data)
+        if serializer.is_valid():
+          serializer.save()
+          return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        ServicioTrabajador=servicioTrabajadorModel.objects.filter(ServTrabID= pk).first()
+        ServicioTrabajador.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
