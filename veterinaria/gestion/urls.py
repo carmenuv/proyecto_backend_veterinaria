@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from .views import *
 
 urlpatterns = [
@@ -37,4 +37,9 @@ urlpatterns = [
     path('registrar-trabajador/', TrabajadorApiView.as_view()),
     path('actualizar-trabajador/<str:pk>', TrabajadorToggleApiView.as_view()),
     path('flltrar-trabajador/', WorkerWithFilters.as_view()),
+
+    path('registro-almacen/', AlmacenApiView.as_view()),
+    path('actualizar-almacen/<str:pk>', AlmacenToggleApiView.as_view()),
+    path('registro-cita/', CitaApiView.as_view()),
+    path('actualizar-cita/<str:pk>', CitaToggleApiView.as_view()),
 ]

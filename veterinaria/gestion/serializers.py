@@ -160,3 +160,43 @@ class Trabajador2Serializer(serializers.ModelSerializer):
               }
           }
 
+class AlmacenSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+  def to_representation(self, instance):
+    return {
+      'AlmacenID': instance.AlmacenID,
+      'ProductoID' : instance.ProductoID,
+      'Cantidad': instance.Cantidad,
+      'FechaIngreso' : instance.FechaIngreso,
+      'FechaVencimiento' : instance.FechaVencimiento,
+      'Observacion' : instance.Observacion,
+    }
+
+class Almacen2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+
+class CitaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+
+  def to_representation(self, instance):
+    return {
+      'CitasID': instance.AlmacenID,
+      'AreatrabID' : instance.ProductoID,
+      'ClienteID': instance.Cantidad,
+      'ServicioID' : instance.FechaIngreso,
+      'PacienteID' : instance.FechaVencimiento,
+      
+    }
+
+class Cita2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
