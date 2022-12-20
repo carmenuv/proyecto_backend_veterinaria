@@ -33,7 +33,7 @@ class RazaModel(models.Model):
 
 class DiagnosticoModel(models.Model):
   DiagnosticoID = models.AutoField(primary_key=True, null=False, unique=True)
-  detalleDiagnostico = models.TextField(null=False, db_column='DetalleDiagnostico')
+  detalleDiagnostico = models.TextField(max_length=50, null=False, db_column='DetalleDiagnostico')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -66,7 +66,7 @@ class TipoDocumentoModel(models.Model):
 
 class AnalisisModel(models.Model):
   AnalisisID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreAnalisis = models.TextField(null=False, db_column='NombreAnalisis')
+  nombreAnalisis = models.TextField(max_length=100, null=False, db_column='NombreAnalisis')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -82,9 +82,9 @@ class TipoTrabajadorModel(models.Model):
 
 class TipoProductoModel(models.Model):
   TipoProductoID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreTipoProducto = models.CharField(max_length=250, null=False, db_column='NombreTipoProducto')
+  nombreTipoProducto = models.CharField(max_length=100, null=False, db_column='NombreTipoProducto')
   descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
-  observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+  observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
     db_table = 'tipoproducto'

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel, ProductoModel
+from .models import *
 
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
