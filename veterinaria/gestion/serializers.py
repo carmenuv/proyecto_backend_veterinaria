@@ -67,6 +67,26 @@ class TipoProductoSerializer(serializers.ModelSerializer):
     model = TipoProductoModel
     fields = '__all__'
 
+class ProductoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = ProductoModel
+    fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
+
+  def to_representation(self, instance):
+    return {
+      'ProductoID': instance.ProductoID,
+      'TipoProducto' : instance.TipoProducto.Tipoproducto,
+      'NombreProducto': instance.NombreProducto,
+      'Descripcion' : instance.Descipcion,
+      'PrecioUnitario' : instance.PrecioUnitario,
+      'Observacion' : instance.Observacion,
+    }
+
+class Producto2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = ProductoModel
+    fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
+
 class ClienteSerializer(serializers.ModelSerializer):
   class Meta:
     model = ClienteModel

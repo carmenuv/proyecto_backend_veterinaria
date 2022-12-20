@@ -569,6 +569,67 @@ class TipoProductoToggleApiView(RetrieveUpdateDestroyAPIView):
         tipoProducto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+#Prodcuto==========================================================================================
+class ProductoApiView(ListCreateAPIView):
+  serializer_class = ProductoSerializer
+  queryset = ProductoModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el producto',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoProducto = informacion.save()
+      nuevoProducto_Serializado = self.serializer_class(instance = nuevoProducto)
+      
+      return Response(data = {
+        'message': 'Nuevo producto creado exitosamente',
+        'content': nuevoProducto_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Producto = ProductoModel.objects.all()
+      Producto_Serializado = self.serializer_class(instance=Producto, many=True)
+      return Response(data={
+            'message': 'Los productos son:',
+            'content': Producto_Serializado.data
+      })
+
+class ProductoToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = Producto2Serializer
+    
+    def get(self, request: Request,pk):
+      Producto = ProductoModel.objects.filter(ProductoID = pk).first()
+      Producto_Serializado = self.serializer_class(instance=Producto)
+      return Response(Producto_Serializado.data)
+
+    def patch(self, request:Request, pk: str):
+        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
+        if Producto:
+          Producto_Serializado = self.serializer_class(instance=Producto)
+          return Response(Producto_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Producto_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request:Request, pk: str):
+        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
+        serializer=self.serializer_class(Producto,data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
+        Producto.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 #Cliente==========================================================================================
 class ClienteApiView(ListCreateAPIView):
   serializer_class = ClienteSerializer

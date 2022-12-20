@@ -27,6 +27,8 @@ urlpatterns = [
 
     path('registro-tipoproducto/', TipoProductoApiView.as_view()),
     path('actualizar-tipoproducto/<str:pk>', TipoProductoToggleApiView.as_view()),
+    path('registro-producto/', ProductoApiView.as_view()),
+    path('actualizar-producto/<str:pk>', ProductoToggleApiView.as_view()),
 
     path('registrar-cliente/', ClienteApiView.as_view()),
     path('actualizar-cliente/<str:pk>', ClienteToggleApiView.as_view()),

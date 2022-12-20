@@ -99,6 +99,17 @@ ESTADOCHOICE = (
     ('2', 'DESHABILITADO')
 )
 
+class ProductoModel(models.Model):
+  ProductoID = models.AutoField(primary_key= True, null=False, unique=True)
+  TipoProducto = models.ForeignKey(TipoProductoModel, on_delete=models.CASCADE, db_column='TipoproductoID')
+  NombreProducto = models.CharField(max_length=250, null=False, db_column='NombreProducto')
+  Descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
+  PrecioUnitario = models.FloatField(null=False, db_column='PrecioUnitario')
+  Observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'producto'
+
 class ClienteModel(models.Model):
   ClienteID = models.AutoField(primary_key= True, null=False, unique=True)
   TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
