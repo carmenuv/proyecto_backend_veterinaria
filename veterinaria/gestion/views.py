@@ -1,10 +1,11 @@
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView,UpdateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView,ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, filters
 from .models import *
 from .serializers import *
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 #Especie==========================================================================================
@@ -568,10 +569,10 @@ class TipoProductoToggleApiView(RetrieveUpdateDestroyAPIView):
         tipoProducto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-#Prodcuto==========================================================================================
-class ProductoApiView(ListCreateAPIView):
-  serializer_class = ProductoSerializer
-  queryset = ProductoModel.objects.all()
+#Cliente==========================================================================================
+class ClienteApiView(ListCreateAPIView):
+  serializer_class = ClienteSerializer
+  queryset = ClienteModel.objects.all()
 
   def create(self, request:Request):
     informacion = self.serializer_class(data=request.data)
@@ -579,45 +580,45 @@ class ProductoApiView(ListCreateAPIView):
 
     if not es_valida:
       return Response(data={
-        'message': 'Error al crear el producto',
+        'message': 'Error al crear el cliente',
         'content': informacion.errors
       },status=status.HTTP_400_BAD_REQUEST)
     else:
-      nuevoProducto = informacion.save()
-      nuevoProducto_Serializado = self.serializer_class(instance = nuevoProducto)
+      nuevoCliente = informacion.save()
+      nuevoCliente_Serializado = self.serializer_class(instance = nuevoCliente)
       
       return Response(data = {
-        'message': 'Nuevo producto creado exitosamente',
-        'content': nuevoProducto_Serializado.data
+        'message': 'Nueva cliente Creado exitosamente',
+        'content': nuevoCliente_Serializado.data
       },status = status.HTTP_201_CREATED)
 
 
   def get(self, request: Request):
-      Producto = ProductoModel.objects.all()
-      Producto_Serializado = self.serializer_class(instance=Producto, many=True)
+      Cliente = ClienteModel.objects.filter(Estado = 'HABILITADO')
+      Clientes_Serializados = self.serializer_class(instance=Cliente, many=True)
       return Response(data={
-            'message': 'Los productos son:',
-            'content': Producto_Serializado.data
+            'message': 'Los clientes son:',
+            'content': Clientes_Serializados.data
       })
 
-class ProductoToggleApiView(RetrieveUpdateDestroyAPIView):
-    serializer_class = Producto2Serializer
+class ClienteToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = Cliente2Serializer
     
     def get(self, request: Request,pk):
-      Producto = ProductoModel.objects.filter(ProductoID = pk).first()
-      Producto_Serializado = self.serializer_class(instance=Producto)
-      return Response(Producto_Serializado.data)
+      Cliente = ClienteModel.objects.filter(ClienteID = pk).first()
+      Cliente_Serializado = self.serializer_class(instance=Cliente)
+      return Response(Cliente_Serializado.data)
 
     def patch(self, request:Request, pk: str):
-        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
-        if Producto:
-          Producto_Serializado = self.serializer_class(instance=Producto)
-          return Response(Producto_Serializado.data,status=status.HTTP_200_OK)
-        return Response(Producto_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+        Cliente = ClienteModel.objects.filter(ClienteID = pk).first()
+        if Cliente:
+          Cliente_Serializado = self.serializer_class(instance=Cliente)
+          return Response(Cliente_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Cliente_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request:Request, pk: str):
-        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
-        serializer=self.serializer_class(Producto,data=request.data)
+        Cliente = ClienteModel.objects.filter(ClienteID = pk).first()
+        serializer=self.serializer_class(Cliente,data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -625,6 +626,117 @@ class ProductoToggleApiView(RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request:Request, pk: str):
-        Producto=ProductoModel.objects.filter(ProductoID = pk).first()
-        Producto.delete()
+        Cliente = ClienteModel.objects.filter(ClienteID = pk).first()
+        if Cliente is None:
+              return Response(data={
+                  'message': 'Cliente no encontrado'
+              }, status=status.HTTP_404_NOT_FOUND)
+
+        Cliente.Estado = 'DESHABILITADO'
+        Cliente.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ClientWithFilters(ListAPIView):
+      queryset = ClienteModel.objects.all().select_related('TipoDocumento')
+      serializer_class = ClienteSerializer
+      filter_backends = [DjangoFilterBackend,filters.SearchFilter,filters.OrderingFilter]
+      filterset_fields = {
+        'Documento': ['contains'],
+        'Nombre': ['contains'],
+        'ApePaterno': ['contains'],
+        'ApeMaterno': ['contains'],
+        'NroContacto': ['contains'],
+        'Direccion': ['contains'],
+        'Correo': ['contains'],
+        'observacion': ['contains']
+      }
+      search_fields = ['Documento', 'Nombre','ApePaterno','ApeMaterno','NroContacto','Direccion','Correo','observacion']
+      ordering_fields = ['Documento', 'Nombre','ApePaterno','ApeMaterno','NroContacto','Direccion','Correo','observacion']
+      ordering = ['ApePaterno']
+
+#Trabajador==========================================================================================
+
+class TrabajadorApiView(ListCreateAPIView):
+  serializer_class = TrabajadorSerializer
+
+  queryset = TrabajadorModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el Trabajador',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoTrabajador = informacion.save()
+      nuevoTrabajador_Serializado = self.serializer_class(instance = nuevoTrabajador)
+      
+      return Response(data = {
+        'message': 'Nueva Trabajador Creado exitosamente',
+        'content': nuevoTrabajador_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Trabajador = TrabajadorModel.objects.filter(Estado = 'HABILITADO')
+      Trabajadores_Serializados = self.serializer_class(instance=Trabajador, many=True)
+      return Response(data={
+            'message': 'Los trabajadores son:',
+            'content': Trabajadores_Serializados.data
+      })
+
+class TrabajadorToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = Trabajador2Serializer
+    
+    def get(self, request: Request,pk):
+      Trabajador = TrabajadorModel.objects.filter(TrabajadorID = pk).first()
+      Trabajador_Serializado = self.serializer_class(instance=Trabajador)
+      return Response(Trabajador_Serializado.data)
+
+    def patch(self, request:Request, pk: str):
+        Trabajador = TrabajadorModel.objects.filter(TrabajadorID = pk).first()
+        if Trabajador:
+          Trabajador_Serializado = self.serializer_class(instance=Trabajador)
+          return Response(Trabajador_Serializado.data,status=status.HTTP_200_OK)
+        return Response(Trabajador_Serializado.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request:Request, pk: str):
+        Trabajador = TrabajadorModel.objects.filter(TrabajadorID = pk).first()
+        serializer=self.serializer_class(Trabajador,data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        Trabajador = TrabajadorModel.objects.filter(TrabajadorID = pk).first()
+        if Trabajador is None:
+              return Response(data={
+                  'message': 'Trabajador no encontrado'
+              }, status=status.HTTP_404_NOT_FOUND)
+
+        Trabajador.Estado = 'DESHABILITADO'
+        Trabajador.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class WorkerWithFilters(ListAPIView):
+      queryset = TrabajadorModel.objects.all().select_related('TipoDocumento').select_related('TipoTrabajador')
+      serializer_class = TrabajadorSerializer
+      filter_backends = [DjangoFilterBackend,filters.SearchFilter,filters.OrderingFilter]
+      filterset_fields = {
+        'Documento': ['contains'],
+        'Nombre': ['contains'],
+        'ApePaterno': ['contains'],
+        'ApeMaterno': ['contains'],
+        'NroContacto': ['contains'],
+        'Direccion': ['contains'],
+        'Correo': ['contains'],
+        'observacion': ['contains']
+      }
+      search_fields = ['Documento', 'Nombre','ApePaterno','ApeMaterno','NroContacto','Direccion','Correo','observacion']
+      ordering_fields = ['Documento', 'Nombre','ApePaterno','ApeMaterno','NroContacto','Direccion','Correo','observacion']
+      ordering = ['ApePaterno']
