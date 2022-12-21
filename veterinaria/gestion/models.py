@@ -3,6 +3,37 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import models
 
+ESTADOCHOICE = (
+    ('1', 'HABILITADO'),
+    ('2', 'DESHABILITADO')
+)
+
+
+PETCHOICE = (
+    ('1', 'MACHO'),
+    ('2', 'HEMBRA')
+)
+
+class TipoUsuarioModel(models.Model):
+  TipoUsuarioID = models.AutoField(primary_key=True, null= False, unique=True, db_column='TipoUsuarioID')
+  Descripcion = models.CharField(max_length=50, null=False, db_column='Descripcion')
+  Observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'TipoUsuario'
+
+
+class UsuarioModel(models.Model):
+  UsuarioID = models.AutoField(primary_key= True, null=False, unique=True)
+  TipoUsuario = models.ForeignKey(TipoUsuarioModel, on_delete=models.CASCADE, db_column='TipoUsuarioID')
+  Alias = models.CharField(max_length=50, null=False, db_column='Alias')
+  Password = models.TextField(null=True, db_column='Password')
+  Correo = models.EmailField(max_length=250, null=False, db_column='Correo')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'Usuario'
+
 class EspecieModel(models.Model):
   EspecieID = models.AutoField(primary_key= True, null=False, unique=True)
   nombreEspecie = models.CharField(max_length=50, null=False, db_column='NombreEspecie')
@@ -123,6 +154,7 @@ class ClienteModel(models.Model):
   Correo = models.CharField(max_length=250, null=True, db_column='Correo')
   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
   observacion = models.TextField(null=True, db_column='Observacion')
+  Usuario = models.ForeignKey(UsuarioModel, on_delete=models.CASCADE, db_column='UsuarioID')
 
   class Meta:
     db_table = 'Cliente'
@@ -141,16 +173,67 @@ class TrabajadorModel(models.Model):
   Correo = models.CharField(max_length=250, null=True, db_column='Correo')
   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
   observacion = models.TextField(null=True, db_column='Observacion')
+  Usuario = models.ForeignKey(UsuarioModel, on_delete=models.CASCADE, db_column='UsuarioID')
 
   class Meta:
     db_table = 'Trabajador'
 
+class servicioTrabajadorModel(models.Model):
+  SerTrabID = models.AutoField(primary_key=True, null=False, unique=True)
+  Servicio = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID')
+  Trabajador = models.ForeignKey(TrabajadorModel, on_delete=models.CASCADE, db_column='TrabajadorID')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'servicioTrabajador'
+
+  def __str__(self):
+    return(self.Servicio.nombreServicio+" "+self.Trabajador.ApePaterno +" "+self.Trabajador.ApeMaterno)
+
+class PacienteModel(models.Model):
+  PacienteID = models.AutoField(primary_key= True, null=False, unique=True)
+  Raza = models.ForeignKey(TipoTrabajadorModel, on_delete=models.CASCADE, db_column='RazaID')
+  Cliente = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID')
+  Nombre = models.CharField(max_length=50, null=False, db_column='Nombre')
+  FechaNac = models.DateTimeField(auto_now_add=False, null=False, db_column='FechaNac')
+  Sexo = models.CharField(max_length=50, null=False, choices=PETCHOICE,db_column='Sexo')
+  Peso = models.FloatField(null=False, db_column='Peso')
+  CodigoChip = models.CharField(max_length=100, null=False, db_column='CodigoChip')
+  Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'Paciente'
+
+class HClinicaModel(models.Model):
+  HClinicaID = models.AutoField(primary_key= True, null=False, unique=True)
+  Cliente = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID')
+  PacienteID = models.ForeignKey(PacienteModel, on_delete=models.CASCADE, db_column='PacienteID')
+  FechaApertura = models.DateTimeField(auto_now_add=True, null=False, db_column='FechaApertura')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'HIstoria_clinica'
+
+class AreaServicioModel(models.Model):
+  AreaTrabID = models.AutoField(primary_key= True, null=False, unique=True)
+  Area = models.ForeignKey(AreaModel, on_delete=models.CASCADE, db_column='AreaID')
+  ServTrab = models.ForeignKey(servicioTrabajadorModel, on_delete=models.CASCADE, db_column='ServTrabID')
+  Fecha = models.DateField(auto_now_add=False, null=False, db_column='fecha')
+  horaInicio = models.DateTimeField(null=False, db_column='horainicio')
+  horaFin = models.DateTimeField(null=False, db_column='horafin')
+  cupo = models.IntegerField(null=False, db_column='Cupo')
+  observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'areaServicio'
+
 class AlmacenModel(models.Model):
-  AlmacenID = models.AutoFiel(primary_key = True, null = False, unique = True)
+  AlmacenID = models.AutoField(primary_key = True, null = False, unique = True)
   ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
-  Cantidad = models.FloatField(null=False)
-  FechaIngreso = models.DateField(null=False)
-  FechaVencimiento = models.DateField()
+  Cantidad = models.FloatField(null=False, db_column='Cantidad')
+  FechaIngreso = models.DateField(null=False, db_column='FechaIngreso')
+  FechaVencimiento = models.DateField(db_column='FechaVencimiento')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -160,7 +243,7 @@ class AlmacenModel(models.Model):
     return self.Cantidad
     
 class CitaModel(models.Model):
-  CitasID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column= 'ProductoID', null=False)
+  CitasID = models.AutoField(primary_key = True, null = False, unique = True)
   AreatrabID = models.ForeignKey(AreaServicioModel, on_delete=models.CASCADE, db_column='AreaID', null= False)
   ClienteID = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID', null=False)
   ServicioID = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID', null= False)
@@ -168,3 +251,91 @@ class CitaModel(models.Model):
     
   class Meta:
     db_table = 'citas'
+
+class VentaModel(models.Model):
+  VentaID = models.AutoField(primary_key = True, null = False, unique = True)
+  Cliente = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID')
+  Fecha = models.DateTimeField(auto_now_add=True, null=False, db_column='Fecha')
+  Observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'venta'
+
+class DetalleVentaModel(models.Model):
+  DetalleVentaID = models.AutoField(primary_key = True, null = False, unique = True)
+  VentaID = models.ForeignKey(VentaModel, on_delete=models.CASCADE, db_column='VentaID')
+  ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID')
+  Cantidad = models.FloatField(null=False, db_column='Cantidad')
+  Descuento = models.FloatField(null=False, db_column='Descuento')
+
+  class Meta:
+    db_table = 'detalleventa'
+
+class AtencionModel(models.Model):
+  AtencionID = models.AutoField(primary_key = True, null = False, unique = True)
+  HClinica = models.ForeignKey(HClinicaModel, on_delete=models.CASCADE, db_column='HClinicaID')
+  AreatrabID = models.ForeignKey(AreaServicioModel, on_delete=models.CASCADE, db_column='AreaID')
+  ServicioID = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID')
+  Trabajador = models.ForeignKey(TrabajadorModel, on_delete=models.CASCADE, db_column='TrabajadorID')
+  DiagnosticoID = models.ForeignKey(DiagnosticoModel, on_delete=models.CASCADE, db_column='DiagnosticoID')
+  FechaAtencion = models.DateTimeField(auto_now_add=True, null=False, db_column='FechaAtencion')
+  SiguienteAtencion = models.DateTimeField(auto_now_add=True, null=False, db_column='SiguienteAtencion')
+  Observacion = models.TextField(null=False, db_column='Observacion')
+
+  class Meta:
+    db_table = 'atencion'
+
+class DetalleAtencionModel(models.Model):
+  DetalleAtencionID = models.AutoField(primary_key=True, unique=True, null=False)
+  AtencionID = models.ForeignKey(AtencionModel, on_delete=models.CASCADE, db_column='AtencionID', null= False)
+  TipoDetalleAtencionID = models.ForeignKey(TipoDetalleAtencionModel, on_delete=models.CASCADE, db_column='TipodetalleAtencionID', null= False)
+  Precio = models.FloatField(null=False, db_column='precio')
+  Cantidad = models.FloatField(null=False, db_column='Cantidad')
+  Descuento = models.FloatField(null=False, db_column='descuento')
+  Observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'detalleatencion'
+
+class OrdenLaboratorioModel(models.Model):
+  OrdenlabID = models.AutoField(primary_key = True, null = False, unique = True)
+  AtencionID = models.ForeignKey(AtencionModel, on_delete=models.CASCADE, db_column='AtencionID')
+  Trabajador = models.ForeignKey(TrabajadorModel, on_delete=models.CASCADE, db_column='TrabajadorID')
+  Fecha = models.DateTimeField(auto_now_add=True, null=False, db_column='Fecha')
+  Observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'ordenlaboratorio'
+
+class RecordatorioModel(models.Model):
+  RecordatorioID = models.AutoField(primary_key = True, null = False, unique = True)
+  AtencionID = models.ForeignKey(AtencionModel, on_delete=models.CASCADE, db_column='AtencionID')
+  ServicioID = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID')
+  PacienteID = models.ForeignKey(PacienteModel, on_delete=models.CASCADE, db_column='PacienteID')
+  FechaRecordatorio = models.DateTimeField(auto_now_add=True, null=False, db_column='FechaRecordatorio')
+
+  class Meta:
+    db_table = 'recordatorio'
+
+class DetalleOrdenAnalisisModel(models.Model):
+  DetalleOrdenID = models.AutoField(primary_key = True, null = False, unique = True)
+  OrdenLabID = models.ForeignKey(OrdenLaboratorioModel, on_delete=models.CASCADE, db_column='OrdenLabID')
+  AnalisisID = models.ForeignKey(AnalisisModel, on_delete=models.CASCADE, db_column='AnalisisID')
+  Precio = models.FloatField(null=False, db_column='Precio')
+  Descuento = models.FloatField(null=False, db_column='Descuento')
+  Observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'detalleordenanalisis'
+
+class ResultadoModel(models.Model):
+  ResultadoID = models.AutoField(primary_key=True, unique=True, null=False)
+  DetalleOrdenID = models.ForeignKey(DetalleOrdenAnalisisModel, on_delete=models.CASCADE, db_column='DetalleOrdenID', null= False)
+  DescripcionResultado = models.CharField(max_length=45, null=False, db_column='DescripcionResultado')
+  Fecha = models.DateField(null=False, db_column='Fecha')
+  Observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+  Indicacion = models.CharField(max_length=250, null=True, db_column='Indicacion')
+
+  class Meta:
+    db_table = 'resultado'
+

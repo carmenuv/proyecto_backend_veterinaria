@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import *
 
+class TipoUsuarioSerializer(serializers.ModelSerializer):
+  class Meta:
+    models = TipoUsuarioModel
+    fields = '__all__'
+
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
     model = EspecieModel
@@ -159,6 +164,51 @@ class Trabajador2Serializer(serializers.ModelSerializer):
               }
           }
 
+class servicioTrabajadorSerializer(serializers.ModelSerializer):
+  class Meta:
+    # StringRelatedField > str = campo calculado
+    Trabajador = serializers.StringRelatedField()
+    model = servicioTrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+class servicioTrabajador2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = servicioTrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+
+class areaServicioSerializer(serializers.ModelSerializer):
+  class Meta:
+
+    ServTrab = serializers.StringRelatedField()
+    model = AreaServicioModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+class areaServicio2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = AreaServicioModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
 class AlmacenSerializer(serializers.ModelSerializer):
   class Meta:
     model = AlmacenModel
@@ -199,3 +249,54 @@ class Cita2Serializer(serializers.ModelSerializer):
   class Meta:
     model = CitaModel
     fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+
+
+class VentaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = VentaModel
+    fields = '__all__'
+
+class DetalleVentaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DetalleOrdenAnalisisModel
+    fields = '__all__'
+
+class AtencionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = AtencionModel
+    fields = '__all__'
+
+class DetalleAtencionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DetalleAtencionModel
+    fields = '__all__'
+
+class OrdenLaboratorioSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = OrdenLaboratorioModel
+    fields = '__all__'
+
+class RecordatorioSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
+
+class Recordatorio2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
+
+class DetalleOrdenAnalisisSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DetalleOrdenAnalisisModel
+    fields = '__all__'
+
+class ResultadoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
+
+class Resultado2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
