@@ -95,7 +95,7 @@ class AlmacenModel(models.Model):
   ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
   Cantidad = models.FloatField(null=False, db_column='Cantidad')
   FechaIngreso = models.DateField(null=False, db_column='FechaIngreso')
-  FechaVencimiento = models.DateField(db_column='FehcaVencimiento')
+  FechaVencimiento = models.DateField(db_column='FechaVencimiento')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -107,7 +107,7 @@ class AlmacenModel(models.Model):
     
 #CITAS
 class CitaModel(models.Model):
-  CitasID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column= 'ProductoID', null=False)
+  AlmacenID = models.AutoFiel(primary_key = True, null = False, unique = True)
   AreatrabID = models.ForeignKey(AreaServicioModel, on_delete=models.CASCADE, db_column='AreaID', null= False)
   ClienteID = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID', null=False)
   ServicioID = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID', null= False)
@@ -125,3 +125,35 @@ class TipoUsuarioModel(models.Model):
 
   class Meta:
     db_table = 'TipoUsuario'
+
+
+
+
+#RECORDATORIO===================================================
+
+class RecordatorioModel(models.Model):
+  recordatorioID = models.AutoFiel(primary_key = True, null = False, unique = True, db_column='RecordatorioID')
+  atencionID = models.ForeignKey(AtencionModel, on_delete=models.CASCADE, db_column='AtencionID', null= False)
+  servicioID = models.ForeignKey(ServicioModel, on_delete=models.CASCADE, db_column='ServicioID', null=False)
+  pacienteID = models.ForeignKey(PacienteModel, on_delete=models.CASCADE, db_column='PacienteID', null= False)
+  fechaRecordatorio = models.DateField(db_column='FechaRecordatorio')
+    
+  class Meta:
+    db_table = 'Recordatorio'
+
+#RESULTADO
+class ResultadoModel(models.Model):
+  resultadoID = models.AutoField(primary_key=True, unique=True, null=False, db_column='ResultadoID')
+  detalleOrdenID = models.ForeignKey(DetalleOrdenAnalisisModel, on_delete=models.CASCADE, db_column='DetalleOrdenID', null= False)
+  descripcionResultado = models.CharField(max_length=45, null=False, db_column='DescripcionResultado')
+  fecha = models.DateField(null=False, db_column='Fecha')
+  observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
+  indicacion = models.CharField(max_length=250, null=True, db_column='Indicacion')
+
+  class Meta:
+    db_table = 'Resultado'
+
+
+class DetalleVentaModel(models.Model):
+  pass
+

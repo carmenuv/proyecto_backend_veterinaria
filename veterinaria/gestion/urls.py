@@ -39,5 +39,13 @@ urlpatterns = [
 
     #tipousuario
     path('registro-tipousuario/', TipoUsuarioApiView.as_view()),
-    path('actualizer-tipousuario/', TipoUsuarioToggleApiView.as_view()),
+    path('actualizar-tipousuario/', TipoUsuarioToggleApiView.as_view()),
+
+    #Recordatorio
+    path('registro-recordatorio/', RecordatorioApiView.as_view()),
+    path('actualizar-recordatorio/', RecordatorioToggleApiView.as_view()),
+
+    #resultado
+    path('registro-resultado/', ResultadoApiView.as_view()),
+    path('actualizar-resultado/', ResultadoToggleApiView.as_view()),
 ]

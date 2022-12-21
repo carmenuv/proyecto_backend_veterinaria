@@ -103,8 +103,20 @@ class Cita2Serializer(serializers.ModelSerializer):
     fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
 
 
-
+#TipoUsuario
 class TipoUsuarioSerializer(serializers.ModelSerializer):
   class Meta:
     models = TipoUsuarioModel
+    fields = '__all__'
+#=================================================================================
+#RECORDATORIO SERIALIZER
+class RecordatorioSerializer(serializers.ModelSerializer):
+  class Meta:
+    models = RecordatorioModel
+    fields = '__all__'
+
+#RESULTADO SERIALIZER
+class ResultadoSerializer(serializers.ModelSerializer):
+  class Meta:
+    models = ResultadoModel
     fields = '__all__'

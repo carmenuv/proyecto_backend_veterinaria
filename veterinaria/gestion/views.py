@@ -690,3 +690,119 @@ class TipoUsuarioToggleApiView(RetrieveUpdateDestroyAPIView):
       tipoUsuario=TipoTrabajadorModel.objects.filter(TipoUsuarioID = pk).first()
       tipoUsuario.delete()
       return Response(status=status.HTTP_204_NO_CONTENT) 
+
+
+#Recordatorio
+class RecordatorioApiView(ListCreateAPIView):
+  serializer_class = RecordatorioSerializer
+  queryset = RecordatorioModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el recordatorio',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoRecordatorio = informacion.save()
+      nuevoRecordatorio_Serializado = self.serializer_class(instance = nuevoRecordatorio)
+      
+      return Response(data = {
+        'message': 'Nuevo recordatorio creado exitosamente',
+        'content': nuevoRecordatorio_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Recordatorio = RecordatorioModel.objects.all()
+      Recordatorio_Serializado = self.serializer_class(instance=Recordatorio, many=True)
+      return Response(data={
+            'message': 'Las recordatorios son:',
+            'content': Recordatorio_Serializado.data
+      })
+
+
+
+class RecordatorioToggleApiView(RetrieveUpdateDestroyAPIView):
+
+  serializer_class = RecordatorioSerializer
+  
+  def get(self, request: Request,pk):
+    Recordatorio = RecordatorioModel.objects.filter(RecordatorioID = pk).first()
+    recordatorio_serializados = self.serializer_class(instance=Recordatorio)
+    return Response(recordatorio_serializados.data)
+
+  def put(self, request:Request, pk: str):
+
+      recordatorio=RecordatorioModel.objects.filter(RecordatorioID = pk).first()
+      serializer=RecordatorioSerializer(recordatorio,data=request.data)
+      if serializer.is_valid():
+          serializer.save()
+          return Response(serializer.data,status=status.HTTP_200_OK)
+      return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+  def delete(self, request:Request, pk: str):
+      recordatorio=RecordatorioModel.objects.filter(RecordatorioID = pk).first()
+      recordatorio.delete()
+      return Response(status=status.HTTP_204_NO_CONTENT) 
+
+
+#RESULTADO
+class ResultadoApiView(ListCreateAPIView):
+  serializer_class = ResultadoSerializer
+  queryset = ResultadoModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el resultado correspondiente',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoResultado = informacion.save()
+      nuevoResultado_Serializado = self.serializer_class(instance = nuevoResultado)
+      
+      return Response(data = {
+        'message': 'Nuevo resultado creado exitosamente',
+        'content': nuevoResultado_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      Resultado = ResultadoModel.objects.all()
+      Resultado_Serializado = self.serializer_class(instance=Resultado, many=True)
+      return Response(data={
+            'message': 'Las recordatorios son:',
+            'content': Resultado_Serializado.data
+      })
+
+
+
+class ResultadoToggleApiView(RetrieveUpdateDestroyAPIView):
+
+  serializer_class = ResultadoSerializer
+  
+  def get(self, request: Request,pk):
+    resultado = ResultadoModel.objects.filter(ResultadoID = pk).first()
+    resultado_serializados = self.serializer_class(instance=resultado)
+    return Response(resultado_serializados.data)
+
+  def put(self, request:Request, pk: str):
+
+      resultado=ResultadoModel.objects.filter(ResultadoID = pk).first()
+      serializer=ResultadoSerializer(resultado,data=request.data)
+      if serializer.is_valid():
+          serializer.save()
+          return Response(serializer.data,status=status.HTTP_200_OK)
+      return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+  def delete(self, request:Request, pk: str):
+      resultado=ResultadoModel.objects.filter(ResultadoID = pk).first()
+      resultado.delete()
+      return Response(status=status.HTTP_204_NO_CONTENT)
