@@ -3,6 +3,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import models
+from .authManager import UsuarioManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 ESTADOCHOICE = (
     ('1', 'HABILITADO'),
@@ -15,23 +17,28 @@ PETCHOICE = (
     ('2', 'HEMBRA')
 )
 
-class TipoUsuarioModel(models.Model):
-  TipoUsuarioID = models.AutoField(primary_key=True, null= False, unique=True, db_column='TipoUsuarioID')
-  Descripcion = models.CharField(max_length=50, null=False, db_column='Descripcion')
-  Observacion = models.TextField(null=True, db_column='Observacion')
+USERCHOICE = (
+    ('ADMIN', 'ADMINISTRADOR'), 
+    ('MEDICO', 'MEDICO'),
+    ('GROOMER', 'GROOMER'),
+    ('ASISTENTE MEDICO', 'ASISTENTE MEDICO'),
+    ('ASISTENTE ADMINISTRATIVO', 'ASISTENTE ADMINISTRATIVO'),
+    ('VENDEDOR', 'VENDEDOR'),
+    ('CLIENTE', 'CLIENTE')
+)
 
-  class Meta:
-    db_table = 'TipoUsuario'
-  def __str__(self):
-    return self.Descripcion
-
-class UsuarioModel(models.Model):
+class UsuarioModel(AbstractBaseUser, PermissionsMixin):
   UsuarioID = models.AutoField(primary_key= True, null=False, unique=True)
-  TipoUsuario = models.ForeignKey(TipoUsuarioModel, on_delete=models.CASCADE, db_column='TipoUsuarioID')
-  Alias = models.CharField(max_length=50, null=False, db_column='Alias')
+  TipoUsuario = models.CharField(max_length=40, choices= USERCHOICE, db_column='TipoUsuario')
   Password = models.TextField(null=True, db_column='Password')
-  Correo = models.EmailField(max_length=250, null=False, db_column='Correo')
-  observacion = models.TextField(null=True, db_column='Observacion')
+  Correo = models.EmailField(max_length=250, null=False, db_column='Correo',unique=True)
+  is_staff = models.BooleanField(default=False)
+  is_active = models.BooleanField(default=True)
+
+  objects = UsuarioManager()
+
+  USERNAME_FIELD = 'Correo'
+  REQUIRED_FIELDS = ['tipoUsuario']
 
   class Meta:
     db_table = 'Usuario'

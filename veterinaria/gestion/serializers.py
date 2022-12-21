@@ -2,9 +2,9 @@
 from rest_framework import serializers
 from .models import *
 
-class TipoUsuarioSerializer(serializers.ModelSerializer):
+class UsuarioSerializer(serializers.ModelSerializer):
   class Meta:
-    models = TipoUsuarioModel
+    models = UsuarioModel
     fields = '__all__'
 
 class EspecieSerializer(serializers.ModelSerializer):
@@ -317,22 +317,4 @@ class Resultado2Serializer(serializers.ModelSerializer):
 #   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
 #   observacion = models.TextField(null=True, db_column='Observacion')
 
-class RegistrarUsuarioClienteSerializer(serializers.Serializer):
-  
-    UsuarioID = serializers.IntegerField()
-    TipoUsuario = serializers.IntegerField()
-    Alias = serializers.CharField()
-    Password = serializers.TextField()
-    Correo = serializers.EmailField()
 
-    ClienteID = serializers.IntegerField()
-    TipoDocumento = serializers.IntegerField()
-    Documento = serializers.CharField()
-    Nombre = serializers.CharField()
-    ApePaterno = serializers.CharField()
-    ApeMaterno = serializers.CharField()
-    NroContacto = serializers.CharField()
-    NroAuxiliar = serializers.CharField()
-    Direccion = serializers.CharField()
-    Estado = serializers.CharField()
-    observacion = serializers.TextField()

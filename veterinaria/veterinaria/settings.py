@@ -152,5 +152,5 @@ SIMPLE_JWT = {
     #Es la firma que se utilizara para firmar y verificar las tokens
     'SIGNING_KEY': environ.get('TOKEN_SECRET'),
     #es el nombre con el cual se guardara en el payload del id del usuario
-    'USER_ID_CLAIM': 'id_del_usuario'
+    'USER_ID_CLAIM': 'UsuarioID'
 }

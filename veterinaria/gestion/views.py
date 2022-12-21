@@ -9,62 +9,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db import transaction
 
 
-#TipoUsuario==========================================================================================
-class TipoUsuarioApiView(ListCreateAPIView):
-  serializer_class = TipoUsuarioSerializer
-  queryset = CitaModel.objects.all()
-
-  def create(self, request:Request):
-    informacion = self.serializer_class(data=request.data)
-    es_valida = informacion.is_valid()
-
-    if not es_valida:
-      return Response(data={
-        'message': 'Error al crear el tipo de usuario',
-        'content': informacion.errors
-      },status=status.HTTP_400_BAD_REQUEST)
-    else:
-      nuevoTipoUsuario = informacion.save()
-      nuevoTipoUsuario_Serializado = self.serializer_class(instance = nuevoTipoUsuario)
-      
-      return Response(data = {
-        'message': 'Nuevo tipo de usuario creado exitosamente',
-        'content': nuevoTipoUsuario_Serializado.data
-      },status = status.HTTP_201_CREATED)
-
-
-  def get(self, request: Request):
-      TipoUsuario = CitaModel.objects.all()
-      TipoUsuario_Serializado = self.serializer_class(instance=TipoUsuario, many=True)
-      return Response(data={
-            'message': 'Las citas son:',
-            'content': TipoUsuario_Serializado.data
-      })
-
-class TipoUsuarioToggleApiView(RetrieveUpdateDestroyAPIView):
-
-  serializer_class = TipoUsuarioSerializer
-
-  
-  def get(self, request: Request,pk):
-    TipoUsuario = TipoUsuarioModel.objects.filter(TipoUsuarioID = pk).first()
-    tipoUsuarios_serializados = self.serializer_class(instance=TipoUsuario)
-    return Response(tipoUsuarios_serializados.data)
-
-  def put(self, request:Request, pk: str):
-
-      tipoUsuario=TipoUsuarioModel.objects.filter(TipoUsuarioID = pk).first()
-      serializer=TipoUsuarioSerializer(tipoUsuario,data=request.data)
-      if serializer.is_valid():
-          serializer.save()
-          return Response(serializer.data,status=status.HTTP_200_OK)
-      return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-
-  def delete(self, request:Request, pk: str):
-      tipoUsuario=TipoTrabajadorModel.objects.filter(TipoUsuarioID = pk).first()
-      tipoUsuario.delete()
-      return Response(status=status.HTTP_204_NO_CONTENT) 
-
 #Especie==========================================================================================
 class EspecieApiView(ListCreateAPIView):
   serializer_class = EspecieSerializer
@@ -861,30 +805,6 @@ class WorkerWithFilters(ListAPIView):
 
 
 
-
-class ClienteRegistro(CreateAPIView):
-  serializer_class = RegistrarUsuarioClienteSerializer
-
-  def create(self, request, *args, **kwargs):
-    serializador = RegistrarUsuarioClienteSerializer(data = request.data)
-
-    serializador.is_valid(raise_exception = True)
-
-    varnombre = serializador.validated_data['Nombre']
-    varapepaterno = serializador.validated_data['ApePaterno']
-    varapematerno = serializador.validated_data['ApeMaterno']
-
-    
-
-    usuario = UsuarioModel.objects.create(
-      TipoUsuario=serializador.validated_data['TipoUsuario']
-      # Alias=
-      # Password=
-      # Correo=
-    )
-
-#areaServicio==========================================================================================
-
 class AreaServicioApiView(ListCreateAPIView):
   serializer_class = areaServicioSerializer
   queryset = AreaServicioModel.objects.all()
@@ -1596,3 +1516,39 @@ class ResultadoToggleApiView(RetrieveUpdateDestroyAPIView):
         Resultado=ResultadoModel.objects.filter(ResultadoID = pk).first()
         Resultado.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class ClienteRegistro(CreateAPIView):
+  serializer_class = ClienteSerializer
+
+  def create(self, request):
+    serializador = Cliente2Serializer(data = request.data)
+    serializador.is_valid(raise_exception = True)
+
+    usuario = UsuarioModel.objects.create(
+      TipoUsuario='cliente',
+      Correo=serializador.validated_data['Correo'],
+      Password='RIZOSYCOLITAS'
+    )
+
+    cliente = ClienteModel.objects.create(
+      TipoDocumento = serializador.validated_data['TipoDocumento'],
+      Usuario = usuario,
+      Documento = serializador.validated_data['Documento'],
+      Nombre = serializador.validated_data['Nombre'],
+      ApePaterno = serializador.validated_data['ApePaterno'],
+      ApeMaterno = serializador.validated_data['ApeMaterno'],
+      NroContacto = serializador.validated_data['NroContacto'],
+      NroAuxiliar = serializador.validated_data['NroAuxiliar'],
+      Direccion = serializador.validated_data['Direccion'],
+      Correo = serializador.validated_data['Correo'],
+      observacion = serializador.validated_data['observacion'],
+    )
+    nuevoCliente_Serializado = self.serializer_class(instance = cliente)
+      
+    return Response(data = {
+      'message': 'Nueva cliente Creado exitosamente',
+      'content': nuevoCliente_Serializado.data
+    },status = status.HTTP_201_CREATED)
+#areaServicio==========================================================================================

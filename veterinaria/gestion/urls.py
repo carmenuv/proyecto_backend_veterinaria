@@ -5,9 +5,6 @@ from .views import *
 
 urlpatterns = [
     # el metodo as_view convierte la clase en una vista para que pueda ser consumida por Django
-    path('registro-tipousuario/', TipoUsuarioApiView.as_view()),
-    path('actualizer-tipousuario/', TipoUsuarioToggleApiView.as_view()),
-
     path('registro-especie/', EspecieApiView.as_view()),
     path('actualizar-especie/<str:pk>', EspecieToggleApiView.as_view()),    
     path('registro-tipodetalleatencion/', TipoDetalleAtencionApiView.as_view()),
@@ -72,4 +69,7 @@ urlpatterns = [
     path('actualizar-detalleordenanalisis/<str:pk>', DetalleOrdenAnalisisToggleApiView.as_view()),
     path('registro-resultado/', ResultadoApiView.as_view()),
     path('actualizar-resultado/<str:pk>', ResultadoToggleApiView.as_view()),
+
+    path('registrar-clienteUsu/', ClienteRegistro.as_view()),
+
 ]
