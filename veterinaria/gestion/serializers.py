@@ -2,6 +2,10 @@
 from rest_framework import serializers
 from .models import *
 
+class TipoUsuarioSerializer(serializers.ModelSerializer):
+  class Meta:
+    models = TipoUsuarioModel
+    fields = '__all__'
 
 class EspecieSerializer(serializers.ModelSerializer):
   class Meta:
@@ -67,6 +71,26 @@ class TipoProductoSerializer(serializers.ModelSerializer):
   class Meta:
     model = TipoProductoModel
     fields = '__all__'
+
+class ProductoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = ProductoModel
+    fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
+
+  def to_representation(self, instance):
+    return {
+      'ProductoID': instance.ProductoID,
+      'TipoProducto' : instance.TipoProducto.Tipoproducto,
+      'NombreProducto': instance.NombreProducto,
+      'Descripcion' : instance.Descipcion,
+      'PrecioUnitario' : instance.PrecioUnitario,
+      'Observacion' : instance.Observacion,
+    }
+
+class Producto2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = ProductoModel
+    fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
 
 class ClienteSerializer(serializers.ModelSerializer):
   class Meta:
@@ -141,6 +165,146 @@ class Trabajador2Serializer(serializers.ModelSerializer):
               }
           }
 
+
+
+class servicioTrabajadorSerializer(serializers.ModelSerializer):
+  class Meta:
+    # StringRelatedField > str = campo calculado
+    Trabajador = serializers.StringRelatedField()
+    model = servicioTrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+class servicioTrabajador2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = servicioTrabajadorModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+
+class areaServicioSerializer(serializers.ModelSerializer):
+  class Meta:
+
+    ServTrab = serializers.StringRelatedField()
+    model = AreaServicioModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+class areaServicio2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = AreaServicioModel
+    fields = '__all__'
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }
+
+class AlmacenSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+  def to_representation(self, instance):
+    return {
+      'AlmacenID': instance.AlmacenID,
+      'ProductoID' : instance.ProductoID,
+      'Cantidad': instance.Cantidad,
+      'FechaIngreso' : instance.FechaIngreso,
+      'FechaVencimiento' : instance.FechaVencimiento,
+      'Observacion' : instance.Observacion,
+    }
+
+class Almacen2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = AlmacenModel
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+
+
+class CitaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+
+  def to_representation(self, instance):
+    return {
+      'CitasID': instance.AlmacenID,
+      'AreatrabID' : instance.ProductoID,
+      'ClienteID': instance.Cantidad,
+      'ServicioID' : instance.FechaIngreso,
+      'PacienteID' : instance.FechaVencimiento,
+      
+    }
+
+class Cita2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = CitaModel
+    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+
+
+class VentaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = VentaModel
+    fields = '__all__'
+
+class DetalleVentaSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DetalleOrdenAnalisisModel
+    fields = '__all__'
+
+class AtencionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = AtencionModel
+    fields = '__all__'
+
+class DetalleAtencionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DetalleAtencionModel
+    fields = '__all__'
+
+class OrdenLaboratorioSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = OrdenLaboratorioModel
+    fields = '__all__'
+
+class RecordatorioSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
+
+class Recordatorio2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
+
+class DetalleOrdenAnalisisSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DetalleOrdenAnalisisModel
+    fields = '__all__'
+
+class ResultadoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
+
+class Resultado2Serializer(serializers.ModelSerializer):
+  class Meta:
+    model = RecordatorioModel
+    fields = '__all__'
+
+
 # class IngresoPacienteNuevo(serializers.Serializer):
 #   PacienteID = models.AutoField(primary_key= True, null=False, unique=True)
 #   Raza = models.ForeignKey(TipoTrabajadorModel, on_delete=models.CASCADE, db_column='RazaID')
@@ -172,4 +336,3 @@ class RegistrarUsuarioClienteSerializer(serializers.Serializer):
     Direccion = serializers.CharField()
     Estado = serializers.CharField()
     observacion = serializers.TextField()
-
