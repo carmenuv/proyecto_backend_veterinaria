@@ -144,3 +144,13 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'gestion.UsuarioModel'
+
+SIMPLE_JWT = {
+    #token duracion de 1hora, 30 minutos y 4 segundos
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1, minutes=30, seconds=5),
+    #Es la firma que se utilizara para firmar y verificar las tokens
+    'SIGNING_KEY': environ.get('TOKEN_SECRET'),
+    #es el nombre con el cual se guardara en el payload del id del usuario
+    'USER_ID_CLAIM': 'id_del_usuario'
+}

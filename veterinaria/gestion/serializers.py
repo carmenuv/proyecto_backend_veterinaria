@@ -1,7 +1,6 @@
 
 from rest_framework import serializers
-from .models import EspecieModel,TipoDetalleAtencionModel,RazaModel, DiagnosticoModel, ServicioModel, AreaModel,TipoDocumentoModel, AnalisisModel, TipoTrabajadorModel, TipoProductoModel,ClienteModel,TrabajadorModel
-
+from .models import *
 
 
 class EspecieSerializer(serializers.ModelSerializer):
@@ -154,5 +153,23 @@ class Trabajador2Serializer(serializers.ModelSerializer):
 #   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
 #   observacion = models.TextField(null=True, db_column='Observacion')
 
-class RegistrarUsuarioCliente(serializers.Serializer):
+class RegistrarUsuarioClienteSerializer(serializers.Serializer):
   
+    UsuarioID = serializers.IntegerField()
+    TipoUsuario = serializers.IntegerField()
+    Alias = serializers.CharField()
+    Password = serializers.TextField()
+    Correo = serializers.EmailField()
+
+    ClienteID = serializers.IntegerField()
+    TipoDocumento = serializers.IntegerField()
+    Documento = serializers.CharField()
+    Nombre = serializers.CharField()
+    ApePaterno = serializers.CharField()
+    ApeMaterno = serializers.CharField()
+    NroContacto = serializers.CharField()
+    NroAuxiliar = serializers.CharField()
+    Direccion = serializers.CharField()
+    Estado = serializers.CharField()
+    observacion = serializers.TextField()
+

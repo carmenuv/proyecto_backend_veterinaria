@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView,ListAPIView
+from rest_framework.generics import *
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status, filters
@@ -748,3 +748,23 @@ class WorkerWithFilters(ListAPIView):
 # class HisctoriaClinicaApiView(ListCreateAPIView):
 #   serializer_class = TrabajadorSerializer
 
+class ClienteRegistro(CreateAPIView):
+  serializer_class = RegistrarUsuarioClienteSerializer
+
+  def create(self, request, *args, **kwargs):
+    serializador = RegistrarUsuarioClienteSerializer(data = request.data)
+
+    serializador.is_valid(raise_exception = True)
+
+    varnombre = serializador.validated_data['Nombre']
+    varapepaterno = serializador.validated_data['ApePaterno']
+    varapematerno = serializador.validated_data['ApeMaterno']
+
+    
+
+    usuario = UsuarioModel.objects.create(
+      TipoUsuario=serializador.validated_data['TipoUsuario']
+      # Alias=
+      # Password=
+      # Correo=
+    )
