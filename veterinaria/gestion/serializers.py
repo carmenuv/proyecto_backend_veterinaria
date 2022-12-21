@@ -101,3 +101,10 @@ class Cita2Serializer(serializers.ModelSerializer):
   class Meta:
     model = CitaModel
     fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+
+
+
+class TipoUsuarioSerializer(serializers.ModelSerializer):
+  class Meta:
+    models = TipoUsuarioModel
+    fields = '__all__'

@@ -93,17 +93,17 @@ class TipoProductoModel(models.Model):
 class AlmacenModel(models.Model):
   AlmacenID = models.AutoFiel(primary_key = True, null = False, unique = True)
   ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
-  Cantidad = models.FloatField(null=False)
-  FechaIngreso = models.DateField(null=False)
-  FechaVencimiento = models.DateField()
+  Cantidad = models.FloatField(null=False, db_column='Cantidad')
+  FechaIngreso = models.DateField(null=False, db_column='FechaIngreso')
+  FechaVencimiento = models.DateField(db_column='FehcaVencimiento')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
     db_table = 'almacen'
 
 #dentro de ProductoModel
-  def __str__(self):
-    return self.Cantidad
+  #def __str__(self):#El que va enviar
+    #return self.Cantidad
     
 #CITAS
 class CitaModel(models.Model):
@@ -115,3 +115,13 @@ class CitaModel(models.Model):
     
   class Meta:
     db_table = 'citas'
+
+#TIPOUSUARIO
+
+class TipoUsuarioModel(models.Model):
+  TipoUsuarioID = models.AutoField(primary_key=True, null= False, unique=True, db_column='TipoUsuarioID')
+  Descripcion = models.CharField(max_length=50, null=False, db_column='Descripcion')
+  Observacion = models.TextField(null=True, db_column='Observacion')
+
+  class Meta:
+    db_table = 'TipoUsuario'

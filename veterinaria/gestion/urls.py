@@ -36,4 +36,8 @@ urlpatterns = [
     #citas
     path('registro-cita/', CitaApiView.as_view()),
     path('actualizar-cita/<str:pk>', CitaToggleApiView.as_view()),
+
+    #tipousuario
+    path('registro-tipousuario/', TipoUsuarioApiView.as_view()),
+    path('actualizer-tipousuario/', TipoUsuarioToggleApiView.as_view()),
 ]

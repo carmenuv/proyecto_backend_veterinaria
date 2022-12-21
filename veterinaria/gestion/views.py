@@ -633,3 +633,60 @@ class CitaToggleApiView(RetrieveUpdateDestroyAPIView):
         Cita=CitaModel.objects.filter(CitasID = pk).first()
         Cita.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+#tipoUsuario
+class TipoUsuarioApiView(ListCreateAPIView):
+  serializer_class = TipoUsuarioSerializer
+  queryset = CitaModel.objects.all()
+
+  def create(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear el tipo de usuario',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoTipoUsuario = informacion.save()
+      nuevoTipoUsuario_Serializado = self.serializer_class(instance = nuevoTipoUsuario)
+      
+      return Response(data = {
+        'message': 'Nuevo tipo de usuario creado exitosamente',
+        'content': nuevoTipoUsuario_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      TipoUsuario = CitaModel.objects.all()
+      TipoUsuario_Serializado = self.serializer_class(instance=TipoUsuario, many=True)
+      return Response(data={
+            'message': 'Las citas son:',
+            'content': TipoUsuario_Serializado.data
+      })
+
+class TipoUsuarioToggleApiView(RetrieveUpdateDestroyAPIView):
+
+  serializer_class = TipoUsuarioSerializer
+
+  
+  def get(self, request: Request,pk):
+    TipoUsuario = TipoUsuarioModel.objects.filter(TipoUsuarioID = pk).first()
+    tipoUsuarios_serializados = self.serializer_class(instance=TipoUsuario)
+    return Response(tipoUsuarios_serializados.data)
+
+  def put(self, request:Request, pk: str):
+
+      tipoUsuario=TipoUsuarioModel.objects.filter(TipoUsuarioID = pk).first()
+      serializer=TipoUsuarioSerializer(tipoUsuario,data=request.data)
+      if serializer.is_valid():
+          serializer.save()
+          return Response(serializer.data,status=status.HTTP_200_OK)
+      return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+  def delete(self, request:Request, pk: str):
+      tipoUsuario=TipoTrabajadorModel.objects.filter(TipoUsuarioID = pk).first()
+      tipoUsuario.delete()
+      return Response(status=status.HTTP_204_NO_CONTENT) 
