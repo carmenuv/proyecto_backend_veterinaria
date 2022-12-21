@@ -1,6 +1,7 @@
-from django.urls import path,include
+from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .views import EspecieApiView,EspecieToggleApiView,TipoDetalleAtencionApiView,ClienteToggleApiView,TipoDetalleAtencionToggleApiView,RazaApiView, RazaToggleApiView, DiagnosticoApiView, DiagnosticoToggleApiView, ServicioApiView, ServicioToggleApiView, AreaApiView,AreaToggleApiView,TipoDocumentoApiView,DocumentoToggleApiView, AnalisisApiView, AnalisisToggleApiView, TipoTrabajadorApiView,TipoTrabajadorToggleApiView, TipoProductoApiView, TipoProductoToggleApiView,ClienteApiView,ClientWithFilters, TrabajadorApiView,TrabajadorToggleApiView,WorkerWithFilters
+from .views import *
 
 urlpatterns = [
     # el metodo as_view convierte la clase en una vista para que pueda ser consumida por Django

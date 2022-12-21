@@ -6,6 +6,7 @@ from rest_framework import status, filters
 from .models import *
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db import transaction
 
 
 #Especie==========================================================================================
@@ -740,3 +741,10 @@ class WorkerWithFilters(ListAPIView):
       search_fields = ['Documento', 'Nombre','ApePaterno','ApeMaterno','NroContacto','Direccion','Correo','observacion']
       ordering_fields = ['Documento', 'Nombre','ApePaterno','ApeMaterno','NroContacto','Direccion','Correo','observacion']
       ordering = ['ApePaterno']
+
+
+#Historia Clinica==========================================================================================
+
+# class HisctoriaClinicaApiView(ListCreateAPIView):
+#   serializer_class = TrabajadorSerializer
+
