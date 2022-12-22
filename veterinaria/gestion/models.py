@@ -28,9 +28,9 @@ USERCHOICE = (
 )
 
 class UsuarioModel(AbstractBaseUser, PermissionsMixin):
-  UsuarioID = models.AutoField(primary_key= True, null=False, unique=True)
+  id = models.AutoField(primary_key= True, null=False, unique=True)
   TipoUsuario = models.CharField(max_length=40, choices= USERCHOICE, db_column='TipoUsuario')
-  Password = models.TextField(null=True, db_column='Password')
+  password = models.TextField(null=False, db_column='password')
   Correo = models.EmailField(max_length=250, null=False, db_column='Correo',unique=True)
   is_staff = models.BooleanField(default=False)
   is_active = models.BooleanField(default=True)
@@ -148,7 +148,6 @@ class ProductoModel(models.Model):
 class ClienteModel(models.Model):
   ClienteID = models.AutoField(primary_key= True, null=False, unique=True)
   TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
-  Usuario = models.ForeignKey(UsuarioModel, on_delete=models.CASCADE, db_column='UsuarioID')
   Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
   Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
   ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')

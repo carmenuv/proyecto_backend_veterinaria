@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .views import *
 
 urlpatterns = [
-    # el metodo as_view convierte la clase en una vista para que pueda ser consumida por Django
+    path('iniciar-sesion/', TokenObtainPairView.as_view()),
     path('registro-especie/', EspecieApiView.as_view()),
     path('actualizar-especie/<str:pk>', EspecieToggleApiView.as_view()),    
     path('registro-tipodetalleatencion/', TipoDetalleAtencionApiView.as_view()),

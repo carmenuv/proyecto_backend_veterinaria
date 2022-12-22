@@ -1521,7 +1521,7 @@ class ResultadoToggleApiView(RetrieveUpdateDestroyAPIView):
 
 class ClienteRegistro(CreateAPIView):
   serializer_class = ClienteSerializer
-
+  @transaction.atomic
   def create(self, request):
     serializador = Cliente2Serializer(data = request.data)
     serializador.is_valid(raise_exception = True)
@@ -1529,12 +1529,14 @@ class ClienteRegistro(CreateAPIView):
     usuario = UsuarioModel.objects.create(
       TipoUsuario='cliente',
       Correo=serializador.validated_data['Correo'],
-      Password='RIZOSYCOLITAS'
+      password='RIZOSYCOLITAS'
     )
+
+    usuario.set_password(usuario.password)
+    usuario.save()
 
     cliente = ClienteModel.objects.create(
       TipoDocumento = serializador.validated_data['TipoDocumento'],
-      Usuario = usuario,
       Documento = serializador.validated_data['Documento'],
       Nombre = serializador.validated_data['Nombre'],
       ApePaterno = serializador.validated_data['ApePaterno'],
