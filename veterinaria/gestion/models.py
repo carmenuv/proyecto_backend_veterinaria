@@ -160,7 +160,7 @@ class areaServicioModel(models.Model):
   Fecha = models.DateField(auto_now_add=False, null=False)
   horaInicio = models.DateTimeField(null=False)
   horaFin = models.DateTimeField(null=False)
-  cupo = models.AutoField(null=False)
+  cupo = models.IntegerField(null=False)
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
