@@ -70,6 +70,8 @@ class RazaModel(models.Model):
 
   class Meta:
     db_table = 'Raza'
+  def __str__(self):
+    return self.NombreRaza
 
 class DiagnosticoModel(models.Model):
   DiagnosticoID = models.AutoField(primary_key=True, null=False, unique=True)
@@ -161,12 +163,14 @@ class ClienteModel(models.Model):
 
   class Meta:
     db_table = 'Cliente'
+  
+  def __str__(self):
+    return (self.Nombre+" "+self.ApePaterno+" "+self.ApeMaterno)
 
 class TrabajadorModel(models.Model):
   TrabajadorID = models.AutoField(primary_key= True, null=False, unique=True)
   TipoTrabajador = models.ForeignKey(TipoTrabajadorModel, on_delete=models.CASCADE, db_column='TipoTrabajadorID')
   TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
-  Usuario = models.ForeignKey(UsuarioModel, on_delete=models.CASCADE, db_column='UsuarioID')
   Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
   Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
   ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')
@@ -195,13 +199,14 @@ class servicioTrabajadorModel(models.Model):
 
 class PacienteModel(models.Model):
   PacienteID = models.AutoField(primary_key= True, null=False, unique=True)
-  Raza = models.ForeignKey(TipoTrabajadorModel, on_delete=models.CASCADE, db_column='RazaID')
+  Raza = models.ForeignKey(RazaModel, on_delete=models.CASCADE, db_column='RazaID')
   Cliente = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID')
   Nombre = models.CharField(max_length=50, null=False, db_column='Nombre')
   FechaNac = models.DateTimeField(auto_now_add=False, null=False, db_column='FechaNac')
   Sexo = models.CharField(max_length=50, null=False, choices=PETCHOICE,db_column='Sexo')
   Peso = models.FloatField(null=False, db_column='Peso')
   CodigoChip = models.CharField(max_length=100, null=False, db_column='CodigoChip')
+  Foto = models.ImageField(null=True,blank='',default='',upload_to='fotospet/',db_column='Foto')
   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
   observacion = models.TextField(null=True, db_column='Observacion')
 

@@ -305,16 +305,18 @@ class Resultado2Serializer(serializers.ModelSerializer):
     fields = '__all__'
 
 
-# class IngresoPacienteNuevo(serializers.Serializer):
-#   PacienteID = models.AutoField(primary_key= True, null=False, unique=True)
-#   Raza = models.ForeignKey(TipoTrabajadorModel, on_delete=models.CASCADE, db_column='RazaID')
-#   Cliente = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID')
-#   Nombre = models.CharField(max_length=50, null=False, db_column='Nombre')
-#   FechaNac = models.DateTimeField(auto_now_add=False, null=False, db_column='Nombre')
-#   Sexo = models.CharField(max_length=50, null=False, choices=PETCHOICE,db_column='Sexo')
-#   Peso = models.FloatField(null=False, db_column='Peso')
-#   CodigoChip = models.CharField(max_length=100, null=False, db_column='CodigoChip')
-#   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
-#   observacion = models.TextField(null=True, db_column='Observacion')
+class cambiarpassword(serializers.Serializer):
+  newpasssword = serializers.CharField(required=True)
+  confirmpasssword = serializers.CharField(required=True)
 
 
+class MascotaHclinica(serializers.ModelSerializer):
+  Cliente = serializers.StringRelatedField
+  class Meta:
+    model = PacienteModel
+    fields = ('Raza','Cliente','Nombre','FechaNac','Sexo','Peso','CodigoChip','Foto','observacion',)
+    extra_kwargs = {
+              'Estado': {
+                  'read_only': True
+              }
+          }

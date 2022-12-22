@@ -71,5 +71,7 @@ urlpatterns = [
     path('actualizar-resultado/<str:pk>', ResultadoToggleApiView.as_view()),
 
     path('registrar-clienteUsu/', ClienteRegistro.as_view()),
-
+    path('registrar-trabajadorUsu/', TrabajadorRegistro.as_view()),
+    path('cambiar-pass/<str:pk>', cambiarcontraseña.as_view()),
+    path('registrar-paciente/', PacienteHistoriaApiView.as_view()),
 ]

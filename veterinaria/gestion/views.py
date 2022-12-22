@@ -7,7 +7,7 @@ from .models import *
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import transaction
-
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 #Especie==========================================================================================
 class EspecieApiView(ListCreateAPIView):
@@ -1518,7 +1518,6 @@ class ResultadoToggleApiView(RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 class ClienteRegistro(CreateAPIView):
   serializer_class = ClienteSerializer
   @transaction.atomic
@@ -1554,3 +1553,92 @@ class ClienteRegistro(CreateAPIView):
       'content': nuevoCliente_Serializado.data
     },status = status.HTTP_201_CREATED)
 #areaServicio==========================================================================================
+class cambiarcontraseña(UpdateAPIView):
+  serializer_class = cambiarpassword
+    
+  def put(self, request:Request, pk: str):
+    usuario = UsuarioModel.objects.filter(id = pk).first()
+    serializador = cambiarpassword(data = request.data)
+    serializador.is_valid(raise_exception = True)
+
+    
+    if(serializador.validated_data['newpasssword'] == serializador.validated_data['confirmpasssword']):
+      usuario.set_password(serializador.validated_data['newpasssword'])
+      usuario.save()
+      return Response('contraseña cambiada exitosamente')
+    return Response(usuario.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class TrabajadorRegistro(CreateAPIView):
+  serializer_class = Trabajador2Serializer
+  @transaction.atomic
+  def create(self, request):
+    serializador = Trabajador2Serializer(data = request.data)
+    serializador.is_valid(raise_exception = True)
+    
+    Tipotrab = TipoTrabajadorModel.objects.filter(TipoTrabajadorID = request.data.get('TipoTrabajador')).first()
+    
+    usuario = UsuarioModel.objects.create(
+      TipoUsuario=Tipotrab.nombreTrabajo,
+      Correo=serializador.validated_data['Correo'],
+      password='RIZOSYCOLITAS'
+    )
+
+    usuario.set_password(usuario.password)
+    usuario.save()
+
+    
+    Trabajador = TrabajadorModel.objects.create(
+      TipoTrabajador = serializador.validated_data['TipoTrabajador'],
+      TipoDocumento = serializador.validated_data['TipoDocumento'],
+      Documento = serializador.validated_data['Documento'],
+      Nombre = serializador.validated_data['Nombre'],
+      ApePaterno = serializador.validated_data['ApePaterno'],
+      ApeMaterno = serializador.validated_data['ApeMaterno'],
+      NroContacto = serializador.validated_data['NroContacto'],
+      NroAuxiliar = serializador.validated_data['NroAuxiliar'],
+      Direccion = serializador.validated_data['Direccion'],
+      Correo = serializador.validated_data['Correo'],
+      observacion = serializador.validated_data['observacion'],
+    )
+    nuevoTrabajador_Serializado = self.serializer_class(instance = Trabajador)
+      
+    return Response(data = {
+      'message': 'Nueva Trabajador Creado exitosamente',
+      'content': nuevoTrabajador_Serializado.data
+    },status = status.HTTP_201_CREATED)
+
+
+
+class PacienteHistoriaApiView(CreateAPIView):
+  serializer_class = MascotaHclinica
+  
+  @transaction.atomic
+  def create(self, request:Request):
+    serializador = MascotaHclinica(data = request.data)
+    serializador.is_valid(raise_exception = True)
+
+    ClienteObtenido = ClienteModel.objects.filter(ClienteID = request.data.get('Cliente')).first()
+    nuevoPaciente = PacienteModel.objects.create(
+      Raza = serializador.validated_data['Raza'],
+      Cliente = serializador.validated_data['Cliente'],
+      Nombre = serializador.validated_data['Nombre'],
+      FechaNac = serializador.validated_data['FechaNac'],
+      Sexo = serializador.validated_data['Sexo'],
+      Peso = serializador.validated_data['Peso'],
+      CodigoChip = serializador.validated_data['CodigoChip'],
+      Foto = serializador.validated_data['Foto'],
+      observacion = serializador.validated_data['observacion'],
+    )
+    
+    Hclinica = HClinicaModel.objects.create(
+    PacienteID=nuevoPaciente,
+    Cliente = serializador.validated_data['Cliente']
+    )
+    nuevoPaciente_Serializado = self.serializer_class(instance = nuevoPaciente)
+    
+    return Response(data = {
+      'message': 'Nuevo paciente creado exitosamente',
+      'content': nuevoPaciente_Serializado.data
+    },status = status.HTTP_201_CREATED)
+
+
