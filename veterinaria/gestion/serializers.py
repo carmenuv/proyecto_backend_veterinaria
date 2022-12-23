@@ -240,11 +240,11 @@ class CitaSerializer(serializers.ModelSerializer):
 
   def to_representation(self, instance):
     return {
-      'CitasID': instance.AlmacenID,
-      'AreatrabID' : instance.ProductoID,
-      'ClienteID': instance.Cantidad,
-      'ServicioID' : instance.FechaIngreso,
-      'PacienteID' : instance.FechaVencimiento,
+      'CitasID': instance.CitasID,
+      'AreatrabID' : instance.AreatrabID,
+      'ClienteID': instance.ClienteID,
+      'ServicioID' : instance.ServicioID,
+      'PacienteID' : instance.PacienteID,
     }
 
 class Cita2Serializer(serializers.ModelSerializer):
