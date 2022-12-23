@@ -135,6 +135,8 @@ class TipoProductoModel(models.Model):
 
   class Meta:
     db_table = 'tipoproducto'
+  def __str__(self):
+    return self.nombreTipoProducto
 
 class ProductoModel(models.Model):
   ProductoID = models.AutoField(primary_key= True, null=False, unique=True)
@@ -146,6 +148,8 @@ class ProductoModel(models.Model):
 
   class Meta:
     db_table = 'producto'
+  def __str__(self):
+    return self.NombreProducto
 
 class ClienteModel(models.Model):
   ClienteID = models.AutoField(primary_key= True, null=False, unique=True)
@@ -238,11 +242,11 @@ class AreaServicioModel(models.Model):
 
 class AlmacenModel(models.Model):
   AlmacenID = models.AutoField(primary_key = True, null = False, unique = True)
-  ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
+  Producto = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
   Cantidad = models.FloatField(null=False, db_column='Cantidad')
   FechaIngreso = models.DateField(null=False, db_column='FechaIngreso')
   FechaVencimiento = models.DateField(db_column='FechaVencimiento')
-  observacion = models.TextField(null=True, db_column='Observacion')
+  observacion = models.TextField(null=True, db_column='observacion')
 
   class Meta:
     db_table = 'almacen'

@@ -4,14 +4,25 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status, filters
 from .models import *
+from .permissions import *
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import transaction
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
+
+#IsAuthenticated > solamente verifica que en la peticion este enviando una token valida
+# IsAuthenticatedReadOnly > Solamente para los metodos QUE NO SEAN GET pedira una token
+#valida
+#IsAdminUser > verificara que el usuario de la token sea un usuario administrador
+#(is_superuser = True)
+#AllowAny >
 
 #Especie==========================================================================================
 class EspecieApiView(ListCreateAPIView):
   serializer_class = EspecieSerializer
+  permission_classes = [PermisoAdmin,PermisoMedico]
   queryset = EspecieModel.objects.all()
 
   def post(self, request:Request):
@@ -1610,11 +1621,11 @@ class TrabajadorRegistro(CreateAPIView):
 
 
 class PacienteHistoriaApiView(CreateAPIView):
-  serializer_class = MascotaHclinica
+  serializer_class = PacienteHclinica
   
   @transaction.atomic
   def create(self, request:Request):
-    serializador = MascotaHclinica(data = request.data)
+    serializador = PacienteHclinica(data = request.data)
     serializador.is_valid(raise_exception = True)
 
     ClienteObtenido = ClienteModel.objects.filter(ClienteID = request.data.get('Cliente')).first()
@@ -1640,5 +1651,4 @@ class PacienteHistoriaApiView(CreateAPIView):
       'message': 'Nuevo paciente creado exitosamente',
       'content': nuevoPaciente_Serializado.data
     },status = status.HTTP_201_CREATED)
-
 

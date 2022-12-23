@@ -70,7 +70,15 @@ class TipoTrabajadorSerializer(serializers.ModelSerializer):
 class TipoProductoSerializer(serializers.ModelSerializer):
   class Meta:
     model = TipoProductoModel
-    fields = '__all__'
+    fields = ('TipoProductoID','nombreTipoProducto','descripcion','observacion')
+
+  def to_representation(self, instance):
+    return {
+      'TipoProductoID': instance.TipoProductoID,
+      'nombreTipoProducto' : instance.nombreTipoProducto,
+      'descripcion': instance.descripcion,
+      'observacion' : instance.observacion
+    }
 
 class ProductoSerializer(serializers.ModelSerializer):
   class Meta:
@@ -80,9 +88,9 @@ class ProductoSerializer(serializers.ModelSerializer):
   def to_representation(self, instance):
     return {
       'ProductoID': instance.ProductoID,
-      'TipoProducto' : instance.TipoProducto.Tipoproducto,
+      'TipoProducto' : instance.TipoProducto.nombreTipoProducto,
       'NombreProducto': instance.NombreProducto,
-      'Descripcion' : instance.Descipcion,
+      'Descripcion' : instance.Descripcion,
       'PrecioUnitario' : instance.PrecioUnitario,
       'Observacion' : instance.Observacion,
     }
@@ -215,22 +223,22 @@ class areaServicio2Serializer(serializers.ModelSerializer):
 class AlmacenSerializer(serializers.ModelSerializer):
   class Meta:
     model = AlmacenModel
-    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+    fields = ('AlmacenID','Producto','Cantidad','FechaIngreso', 'FechaVencimiento', 'observacion')
 
   def to_representation(self, instance):
     return {
       'AlmacenID': instance.AlmacenID,
-      'ProductoID' : instance.ProductoID,
+      'Producto' : instance.Producto.NombreProducto,
       'Cantidad': instance.Cantidad,
       'FechaIngreso' : instance.FechaIngreso,
       'FechaVencimiento' : instance.FechaVencimiento,
-      'Observacion' : instance.Observacion,
+      'Observacion' : instance.observacion,
     }
 
 class Almacen2Serializer(serializers.ModelSerializer):
   class Meta:
     model = AlmacenModel
-    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'Observacion')
+    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'observacion')
 
 
 class CitaSerializer(serializers.ModelSerializer):
@@ -245,7 +253,6 @@ class CitaSerializer(serializers.ModelSerializer):
       'ClienteID': instance.Cantidad,
       'ServicioID' : instance.FechaIngreso,
       'PacienteID' : instance.FechaVencimiento,
-      
     }
 
 class Cita2Serializer(serializers.ModelSerializer):
@@ -296,7 +303,7 @@ class DetalleOrdenAnalisisSerializer(serializers.ModelSerializer):
 
 class ResultadoSerializer(serializers.ModelSerializer):
   class Meta:
-    model = RecordatorioModel
+    model = ResultadoModel
     fields = '__all__'
 
 class Resultado2Serializer(serializers.ModelSerializer):
@@ -310,7 +317,7 @@ class cambiarpassword(serializers.Serializer):
   confirmpasssword = serializers.CharField(required=True)
 
 
-class MascotaHclinica(serializers.ModelSerializer):
+class PacienteHclinica(serializers.ModelSerializer):
   Cliente = serializers.StringRelatedField
   class Meta:
     model = PacienteModel
@@ -320,3 +327,6 @@ class MascotaHclinica(serializers.ModelSerializer):
                   'read_only': True
               }
           }
+
+# class RegistrarVenta(serializers.Serializer):
+  
