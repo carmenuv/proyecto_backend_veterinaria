@@ -1701,3 +1701,55 @@ class RegistroVenta(CreateAPIView):
       DetalleVentaModel.objects.bulk_create(venta_detalles)
       return Response('Venta exitosa',status=status.HTTP_201_CREATED)
 
+# class RegistroAtencion(CreateAPIView):
+#   serializer_class = RegistrarAtencionSerializer
+#   @transaction.atomic
+#   def create(self, request:Request):
+#       serializador = RegistrarAtencionSerializer(data = request.data)
+#       serializador.is_valid(raise_exception = True)
+#       montoTotal = 0
+
+#       HClinica =  HClinicaModel.objects.filter(HClinicaID = serializador.validated_data['HClinica']).first()
+#       AreatrabID =  AreaServicioModel.objects.filter(AreaTrabID = serializador.validated_data['AreatrabID']).first()
+#       ServicioID =  ServicioModel.objects.filter(ServicioID = serializador.validated_data['ServicioID']).first()
+#       Trabajador =  TrabajadorModel.objects.filter(TrabajadorID = serializador.validated_data['Trabajador']).first()
+#       DiagnosticoID =  DiagnosticoModel.objects.filter(DiagnosticoID = serializador.validated_data['DiagnosticoID']).first()
+      
+#       if(serializador.validated_data['SiguienteAtencion']== None):
+#           serializador.validated_data['SiguienteAtencion'] = '0001-01-01' 
+
+#       Atencion = AtencionModel.objects.create(
+#         HClinica = HClinica,
+#         AreatrabID = AreatrabID,
+#         ServicioID = ServicioID,
+#         Trabajador = Trabajador,
+#         DiagnosticoID = DiagnosticoID,
+#         SiguienteAtencion = serializador.validated_data['SiguienteAtencion'],
+#         MontoT = 0
+#       )
+#       Detalles = serializador.validated_data['Detalles']
+
+#       Detalles_Atencion = []
+
+#       for Detalle in Detalles:
+            
+#             Detalle_Atencion = DetalleVentaModel(
+#               AtencionID = Atencion,
+#               TipoDetalleAtencionID = models.ForeignKey(TipoDetalleAtencionModel, on_delete=models.CASCADE, db_column='TipodetalleAtencionID', null= False)
+#               Precio = models.FloatField(null=False, db_column='precio')
+#               Cantidad = models.FloatField(null=False, db_column='Cantidad')
+#               Descuento = models.FloatField(null=False, db_column='descuento')
+#               MontoD = models.FloatField(null=False, db_column='MontoD', default=0)
+#               Observacion = models.TextField(null=True, db_column='Observacion')
+#             )
+#             almacen.Cantidad = almacen.Cantidad - producto['Cantidad']
+#             almacen.save()
+#             montoTotal = montoTotal + producto['Cantidad'] * Prod.PrecioUnitario
+#             venta_detalles.append(venta_detalle)
+       
+#       if(venta.Descuento > 0):
+#         montoTotal = montoTotal - ((montoTotal * venta.Descuento)/100)
+#       venta.MontoT = montoTotal
+#       venta.save()
+#       DetalleVentaModel.objects.bulk_create(venta_detalles)
+#       return Response('Venta exitosa',status=status.HTTP_201_CREATED)

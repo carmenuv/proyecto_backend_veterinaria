@@ -329,3 +329,22 @@ class RegistrarVentaSerializer(serializers.Serializer):
   Direccion = serializers.CharField()
   Descuento = serializers.FloatField()
   Productos = ListaProductosSerializer(many=True)
+
+class ListaDetalleatencion(serializers.Serializer):
+  AtencionID = serializers.IntegerField()
+  TipoDetalleAtencionID = serializers.IntegerField()
+  Precio = serializers.FloatField()
+  Cantidad = serializers.FloatField()
+  Descuento = serializers.FloatField()
+  MontoD = serializers.FloatField()
+
+class RegistrarAtencionSerializer(serializers.Serializer):
+  HClinica = serializers.IntegerField()
+  AreatrabID = serializers.IntegerField()
+  ServicioID = serializers.IntegerField()
+  Trabajador = serializers.IntegerField()
+  DiagnosticoID = serializers.IntegerField()
+  FechaAtencion = serializers.DateField()
+  SiguienteAtencion = serializers.DateField()
+  MontoT = serializers.FloatField()
+  Detalles = ListaDetalleatencion(many=True)
