@@ -1746,10 +1746,10 @@ class RegistroVenta(CreateAPIView):
 #             almacen.save()
 #             montoTotal = montoTotal + producto['Cantidad'] * Prod.PrecioUnitario
 #             venta_detalles.append(venta_detalle)
-       
 #       if(venta.Descuento > 0):
 #         montoTotal = montoTotal - ((montoTotal * venta.Descuento)/100)
 #       venta.MontoT = montoTotal
 #       venta.save()
 #       DetalleVentaModel.objects.bulk_create(venta_detalles)
 #       return Response('Venta exitosa',status=status.HTTP_201_CREATED)
+
