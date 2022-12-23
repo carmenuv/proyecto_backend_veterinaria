@@ -17,6 +17,14 @@ PETCHOICE = (
     ('2', 'HEMBRA')
 )
 
+VENTACHOICE = (
+    ('1', 'GENERADA'),
+    ('2', 'EN PREPARACION'),
+    ('3', 'PENDIENTE'),
+    ('4', 'ENVIADA'),
+    ('5', 'ENTREGADA'),
+)
+
 USERCHOICE = (
     ('ADMIN', 'ADMINISTRADOR'), 
     ('MEDICO', 'MEDICO'),
@@ -45,7 +53,7 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
 
 class EspecieModel(models.Model):
   EspecieID = models.AutoField(primary_key= True, null=False, unique=True)
-  nombreEspecie = models.CharField(max_length=50, null=False, db_column='NombreEspecie')
+  nombreEspecie = models.CharField(max_length=50, null=False, db_column='NombreEspecie',unique=True)
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -56,7 +64,7 @@ class EspecieModel(models.Model):
 
 class TipoDetalleAtencionModel(models.Model):
   TipoDetalleAtencionID = models.AutoField(primary_key= True, null=False, unique=True)
-  NombreDetalle = models.CharField(max_length=100, null=False, db_column='NombreDetalle')
+  NombreDetalle = models.CharField(max_length=100, null=False,unique=True, db_column='NombreDetalle')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -65,7 +73,7 @@ class TipoDetalleAtencionModel(models.Model):
 class RazaModel(models.Model):
   RazaID = models.AutoField(primary_key= True, null=False, unique=True)
   Especie = models.ForeignKey(EspecieModel, on_delete=models.CASCADE, db_column='EspecieID')
-  NombreRaza = models.CharField(max_length=50, null=False, db_column='NombreRaza')
+  NombreRaza = models.CharField(max_length=50, null=False, db_column='NombreRaza',unique=True)
   Observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -75,7 +83,7 @@ class RazaModel(models.Model):
 
 class DiagnosticoModel(models.Model):
   DiagnosticoID = models.AutoField(primary_key=True, null=False, unique=True)
-  detalleDiagnostico = models.TextField(max_length=50, null=False, db_column='DetalleDiagnostico')
+  detalleDiagnostico = models.CharField(max_length=50,unique=True, null=False, db_column='DetalleDiagnostico')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -83,7 +91,7 @@ class DiagnosticoModel(models.Model):
 
 class ServicioModel(models.Model):
   ServicioID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreServicio = models.CharField(max_length=100, null=False, db_column='NombreServicio')
+  nombreServicio = models.CharField(max_length=100,unique=True, null=False, db_column='NombreServicio')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -91,7 +99,7 @@ class ServicioModel(models.Model):
 
 class AreaModel(models.Model):
   AreaID = models.AutoField(primary_key= True, null=False, unique=True)
-  nombreArea = models.CharField(max_length=100, null=False, db_column='NombreArea')
+  nombreArea = models.CharField(max_length=100,unique=True, null=False, db_column='NombreArea')
   Descripcion = models.CharField(max_length=250, null=False, db_column='Descripcion')
   observacion = models.TextField(null=True, db_column='Observacion')
 
@@ -100,7 +108,7 @@ class AreaModel(models.Model):
 
 class TipoDocumentoModel(models.Model):
   TipoDocumentoID = models.AutoField(primary_key= True, null=False, unique=True)
-  nombreDocumento = models.CharField(max_length=50, null=False, db_column='NombreDocumento')
+  nombreDocumento = models.CharField(max_length=50,unique=True, null=False, db_column='NombreDocumento')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -110,7 +118,7 @@ class TipoDocumentoModel(models.Model):
 
 class AnalisisModel(models.Model):
   AnalisisID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreAnalisis = models.TextField(max_length=100, null=False, db_column='NombreAnalisis')
+  nombreAnalisis = models.CharField(max_length=100,unique=True, null=False, db_column='NombreAnalisis')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -118,7 +126,7 @@ class AnalisisModel(models.Model):
 
 class TipoTrabajadorModel(models.Model):
   TipoTrabajadorID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreTrabajo = models.CharField(max_length=50, null= False, db_column='NombreTrabajo')
+  nombreTrabajo = models.CharField(max_length=50,unique=True, null= False, db_column='NombreTrabajo')
   observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -129,7 +137,7 @@ class TipoTrabajadorModel(models.Model):
 
 class TipoProductoModel(models.Model):
   TipoProductoID = models.AutoField(primary_key=True, null=False, unique=True)
-  nombreTipoProducto = models.CharField(max_length=100, null=False, db_column='NombreTipoProducto')
+  nombreTipoProducto = models.CharField(max_length=100,unique=True, null=False, db_column='NombreTipoProducto')
   descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
   observacion = models.TextField(null=True, db_column='Observacion')
 
@@ -141,27 +149,26 @@ class TipoProductoModel(models.Model):
 class ProductoModel(models.Model):
   ProductoID = models.AutoField(primary_key= True, null=False, unique=True)
   TipoProducto = models.ForeignKey(TipoProductoModel, on_delete=models.CASCADE, db_column='TipoproductoID')
-  NombreProducto = models.CharField(max_length=250, null=False, db_column='NombreProducto')
+  NombreProducto = models.CharField(max_length=250,unique=True, null=False, db_column='NombreProducto')
   Descripcion = models.CharField(max_length=250, null=True, db_column='Descripcion')
   PrecioUnitario = models.FloatField(null=False, db_column='PrecioUnitario')
   Observacion = models.CharField(max_length=250, null=True, db_column='Observacion')
 
   class Meta:
     db_table = 'producto'
-  def __str__(self):
-    return self.NombreProducto
+
 
 class ClienteModel(models.Model):
   ClienteID = models.AutoField(primary_key= True, null=False, unique=True)
   TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
-  Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
+  Documento = models.CharField(max_length=15,unique=True, null=False, db_column='Documento')
   Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
   ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')
   ApeMaterno = models.CharField(max_length=100, null=False, db_column='ApeMaterno')
   NroContacto = models.CharField(max_length=12, null=False, db_column='NroContacto')
   NroAuxiliar = models.CharField(max_length=12, null=True, db_column='NroAuxiliar')
   Direccion = models.CharField(max_length=250, null=False, db_column='Direccion')
-  Correo = models.EmailField(max_length=250, null=False, db_column='Correo')
+  Correo = models.EmailField(max_length=250,unique=True, null=False, db_column='Correo')
   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
   observacion = models.TextField(null=True, db_column='Observacion')
 
@@ -175,14 +182,14 @@ class TrabajadorModel(models.Model):
   TrabajadorID = models.AutoField(primary_key= True, null=False, unique=True)
   TipoTrabajador = models.ForeignKey(TipoTrabajadorModel, on_delete=models.CASCADE, db_column='TipoTrabajadorID')
   TipoDocumento = models.ForeignKey(TipoDocumentoModel, on_delete=models.CASCADE, db_column='TipoDocumentoID')
-  Documento = models.CharField(max_length=15, null=False, db_column='Documento',unique=True)
+  Documento = models.CharField(max_length=15,unique=True, null=False, db_column='Documento')
   Nombre = models.CharField(max_length=250, null=False, db_column='Nombre')
   ApePaterno = models.CharField(max_length=100, null=False, db_column='ApePaterno')
   ApeMaterno = models.CharField(max_length=100, null=False, db_column='ApeMaterno')
   NroContacto = models.CharField(max_length=12, null=False, db_column='NroContacto')
   NroAuxiliar = models.CharField(max_length=12, null=True, db_column='NroAuxiliar')
   Direccion = models.CharField(max_length=250, null=False, db_column='Direccion')
-  Correo = models.EmailField(max_length=250, null=False, db_column='Correo')
+  Correo = models.EmailField(max_length=250,unique=True, null=False, db_column='Correo')
   Estado = models.CharField(max_length=50, null=False, choices=ESTADOCHOICE,db_column='Estado',default='HABILITADO')
   observacion = models.TextField(null=True, db_column='Observacion')
 
@@ -197,6 +204,7 @@ class servicioTrabajadorModel(models.Model):
 
   class Meta:
     db_table = 'servicioTrabajador'
+    unique_together = ('Servicio', 'Trabajador')
 
   def __str__(self):
     return(self.Servicio.nombreServicio+" "+self.Trabajador.ApePaterno +" "+self.Trabajador.ApeMaterno)
@@ -226,6 +234,7 @@ class HClinicaModel(models.Model):
 
   class Meta:
     db_table = 'HIstoria_clinica'
+    unique_together = ('Cliente', 'PacienteID')
 
 class AreaServicioModel(models.Model):
   AreaTrabID = models.AutoField(primary_key= True, null=False, unique=True)
@@ -239,13 +248,14 @@ class AreaServicioModel(models.Model):
 
   class Meta:
     db_table = 'areaServicio'
+    unique_together = ('Area', 'ServTrab')
 
 class AlmacenModel(models.Model):
   AlmacenID = models.AutoField(primary_key = True, null = False, unique = True)
-  Producto = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False)
+  Producto = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID', null=False,unique=True)
   Cantidad = models.FloatField(null=False, db_column='Cantidad')
   FechaIngreso = models.DateField(null=False, db_column='FechaIngreso')
-  FechaVencimiento = models.DateField(db_column='FechaVencimiento')
+  FechaVencimiento = models.DateField(null=True,blank=False, db_column='FechaVencimiento')
   observacion = models.TextField(null=True, db_column='observacion')
 
   class Meta:
@@ -263,11 +273,16 @@ class CitaModel(models.Model):
     
   class Meta:
     db_table = 'citas'
+    unique_together = ('AreatrabID', 'ClienteID', 'ServicioID', 'PacienteID'),
 
 class VentaModel(models.Model):
   VentaID = models.AutoField(primary_key = True, null = False, unique = True)
   Cliente = models.ForeignKey(ClienteModel, on_delete=models.CASCADE, db_column='ClienteID')
   Fecha = models.DateTimeField(auto_now_add=True, null=False, db_column='Fecha')
+  Estado = models.CharField(max_length=50, null=False, choices=VENTACHOICE,db_column='Estado',default='GENERADA')
+  Direccion = models.CharField(max_length=250, null=False, db_column='Direccion', default='ENTREGA EN TIENDA')
+  MontoT = models.FloatField(null=False, db_column='MontoT', default=0)
+  Descuento = models.FloatField(null=True, db_column='Descuento', default=0)
   Observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
@@ -276,12 +291,13 @@ class VentaModel(models.Model):
 class DetalleVentaModel(models.Model):
   DetalleVentaID = models.AutoField(primary_key = True, null = False, unique = True)
   VentaID = models.ForeignKey(VentaModel, on_delete=models.CASCADE, db_column='VentaID')
-  ProductoID = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID')
-  Cantidad = models.FloatField(null=False, db_column='Cantidad')
-  Descuento = models.FloatField(null=False, db_column='Descuento')
+  Producto = models.ForeignKey(ProductoModel, on_delete=models.CASCADE, db_column='ProductoID')
+  Cantidad = models.FloatField(null=False, db_column='Cantidad', default=0)
+  MontoD = models.FloatField(null=False, db_column='MontoD', default=0)
 
   class Meta:
     db_table = 'detalleventa'
+    unique_together = ('VentaID', 'Producto')
 
 class AtencionModel(models.Model):
   AtencionID = models.AutoField(primary_key = True, null = False, unique = True)
@@ -291,11 +307,13 @@ class AtencionModel(models.Model):
   Trabajador = models.ForeignKey(TrabajadorModel, on_delete=models.CASCADE, db_column='TrabajadorID')
   DiagnosticoID = models.ForeignKey(DiagnosticoModel, on_delete=models.CASCADE, db_column='DiagnosticoID')
   FechaAtencion = models.DateTimeField(auto_now_add=True, null=False, db_column='FechaAtencion')
-  SiguienteAtencion = models.DateTimeField(auto_now_add=True, null=False, db_column='SiguienteAtencion')
+  SiguienteAtencion = models.DateTimeField(auto_now_add=False, null=False, db_column='SiguienteAtencion')
+  MontoT = models.FloatField(null=False, db_column='MontoT', default=0)
   Observacion = models.TextField(null=False, db_column='Observacion')
 
   class Meta:
     db_table = 'atencion'
+
 
 class DetalleAtencionModel(models.Model):
   DetalleAtencionID = models.AutoField(primary_key=True, unique=True, null=False)
@@ -304,10 +322,12 @@ class DetalleAtencionModel(models.Model):
   Precio = models.FloatField(null=False, db_column='precio')
   Cantidad = models.FloatField(null=False, db_column='Cantidad')
   Descuento = models.FloatField(null=False, db_column='descuento')
+  MontoD = models.FloatField(null=False, db_column='MontoD', default=0)
   Observacion = models.TextField(null=True, db_column='Observacion')
 
   class Meta:
     db_table = 'detalleatencion'
+    unique_together = ('TipoDetalleAtencionID', 'AtencionID')
 
 class OrdenLaboratorioModel(models.Model):
   OrdenlabID = models.AutoField(primary_key = True, null = False, unique = True)
@@ -339,6 +359,7 @@ class DetalleOrdenAnalisisModel(models.Model):
 
   class Meta:
     db_table = 'detalleordenanalisis'
+    unique_together = ('OrdenLabID','AnalisisID')
 
 class ResultadoModel(models.Model):
   ResultadoID = models.AutoField(primary_key=True, unique=True, null=False)
@@ -350,4 +371,5 @@ class ResultadoModel(models.Model):
 
   class Meta:
     db_table = 'resultado'
+
 

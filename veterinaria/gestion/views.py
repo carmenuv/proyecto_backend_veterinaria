@@ -938,6 +938,9 @@ class AlmacenApiView(ListCreateAPIView):
     informacion = self.serializer_class(data=request.data)
     es_valida = informacion.is_valid()
 
+    if(informacion.validated_data['FechaVencimiento'] == None):
+      informacion.validated_data['FechaVencimiento'] = '0001-01-01' 
+
     if not es_valida:
       return Response(data={
         'message': 'Error al crear el almacen',
@@ -1651,4 +1654,50 @@ class PacienteHistoriaApiView(CreateAPIView):
       'message': 'Nuevo paciente creado exitosamente',
       'content': nuevoPaciente_Serializado.data
     },status = status.HTTP_201_CREATED)
+
+class RegistroVenta(CreateAPIView):
+  serializer_class = RegistrarVentaSerializer
+  
+  @transaction.atomic
+  def create(self, request:Request):
+      serializador = RegistrarVentaSerializer(data = request.data)
+      serializador.is_valid(raise_exception = True)
+      montoTotal = 0
+
+      clienteEncontrado =  ClienteModel.objects.filter(ClienteID = serializador.validated_data['Cliente']).first()
+      
+      venta = VentaModel.objects.create(
+        Cliente = clienteEncontrado,
+        Direccion = serializador.validated_data['Direccion'],
+        Descuento = serializador.validated_data['Descuento'],
+        MontoT = 0,
+      )
+      
+      Productos = serializador.validated_data['Productos']
+
+      venta_detalles = []
+
+      for producto in Productos:
+        Prod = ProductoModel.objects.filter(ProductoID = producto['ProductoID']).first()
+        almacen  = AlmacenModel.objects.filter(Producto = Prod).first()
+        
+        if(float(producto['Cantidad']) < almacen.Cantidad):
+            venta_detalle = DetalleVentaModel(
+              VentaID = venta,
+              Producto = Prod,
+              Cantidad = producto['Cantidad'],
+              MontoD = producto['Cantidad'] * Prod.PrecioUnitario,
+            )
+            almacen.Cantidad = almacen.Cantidad - producto['Cantidad']
+            almacen.save()
+            montoTotal = montoTotal + producto['Cantidad'] * Prod.PrecioUnitario
+            venta_detalles.append(venta_detalle)
+        else:
+          return Response('El stock actual no abanrca la cantidad solicitada',status=status.HTTP_400_BAD_REQUEST)
+      if(venta.Descuento > 0):
+        montoTotal = montoTotal - ((montoTotal * venta.Descuento)/100)
+      venta.MontoT = montoTotal
+      venta.save()
+      DetalleVentaModel.objects.bulk_create(venta_detalles)
+      return Response('Venta exitosa',status=status.HTTP_201_CREATED)
 

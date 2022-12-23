@@ -85,15 +85,7 @@ class ProductoSerializer(serializers.ModelSerializer):
     model = ProductoModel
     fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
 
-  def to_representation(self, instance):
-    return {
-      'ProductoID': instance.ProductoID,
-      'TipoProducto' : instance.TipoProducto.nombreTipoProducto,
-      'NombreProducto': instance.NombreProducto,
-      'Descripcion' : instance.Descripcion,
-      'PrecioUnitario' : instance.PrecioUnitario,
-      'Observacion' : instance.Observacion,
-    }
+ 
 
 class Producto2Serializer(serializers.ModelSerializer):
   class Meta:
@@ -238,7 +230,7 @@ class AlmacenSerializer(serializers.ModelSerializer):
 class Almacen2Serializer(serializers.ModelSerializer):
   class Meta:
     model = AlmacenModel
-    fields = ('AlmacenID','ProductoID','Cantidad','FechaIngreso', 'FechaVencimiento', 'observacion')
+    fields = ('AlmacenID','Producto','Cantidad','FechaIngreso', 'FechaVencimiento', 'observacion')
 
 
 class CitaSerializer(serializers.ModelSerializer):
@@ -328,5 +320,12 @@ class PacienteHclinica(serializers.ModelSerializer):
               }
           }
 
-# class RegistrarVenta(serializers.Serializer):
+class ListaProductosSerializer(serializers.Serializer):
+  ProductoID = serializers.IntegerField()
+  Cantidad = serializers.FloatField()
   
+class RegistrarVentaSerializer(serializers.Serializer):
+  Cliente = serializers.IntegerField()
+  Direccion = serializers.CharField()
+  Descuento = serializers.FloatField()
+  Productos = ListaProductosSerializer(many=True)

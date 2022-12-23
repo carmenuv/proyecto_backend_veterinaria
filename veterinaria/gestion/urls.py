@@ -74,4 +74,5 @@ urlpatterns = [
     path('registrar-trabajadorUsu/', TrabajadorRegistro.as_view()),
     path('cambiar-pass/<str:pk>', cambiarcontraseña.as_view()),
     path('registrar-paciente/', PacienteHistoriaApiView.as_view()),
+    path('registrar-ventadetallada/', RegistroVenta.as_view()),
 ]
