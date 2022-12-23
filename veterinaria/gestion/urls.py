@@ -1,8 +1,10 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from .views import *
 
 urlpatterns = [
-    # el metodo as_view convierte la clase en una vista para que pueda ser consumida por Django
+    path('iniciar-sesion/', TokenObtainPairView.as_view()),
     path('registro-especie/', EspecieApiView.as_view()),
     path('actualizar-especie/<str:pk>', EspecieToggleApiView.as_view()),    
     path('registro-tipodetalleatencion/', TipoDetalleAtencionApiView.as_view()),
@@ -42,4 +44,35 @@ urlpatterns = [
     path('actualizar-almacen/<str:pk>', AlmacenToggleApiView.as_view()),
     path('registro-cita/', CitaApiView.as_view()),
     path('actualizar-cita/<str:pk>', CitaToggleApiView.as_view()),
+
+    path('registrar-area-servicio/',AreaServicioApiView .as_view()),
+    path('actualizar-area-servicio/<str:pk>', AreaServicioToggleApiView.as_view()),    
+    path('registrar-servicio-trabajador/', ServicioTrabajadorApiView.as_view()),
+    path('actualizar-servicio-trabajador/<str:pk>', ServicioToggleApiView.as_view()),
+
+    path('registro-venta/', VentaApiView.as_view()),
+    path('actualizar-venta/<str:pk>', VentaToggleApiView.as_view()),
+    path('registro-detalleventa/', DetalleVentaApiView.as_view()),
+    path('actualizar-detalleventa/<str:pk>', DetalleVentaToggleApiView.as_view()),
+
+    path('registro-atencion/', AtencionApiView.as_view()),
+    path('actualizar-atencion/<str:pk>', AtencionToggleApiView.as_view()),
+    path('registro-detalleatencion/', DetalleAtencionApiView.as_view()),
+    path('actualizar-detalleatencion/<str:pk>', DetalleAtencionToggleApiView.as_view()),
+
+    path('registro-ordenlaboratorio/', OrdenLaboratorioApiView.as_view()),
+    path('actualizar-ordenlaboratorio/<str:pk>', OrdenLaboratorioToggleApiView.as_view()),
+    path('registro-orecordatorioo/', RecordatorioApiView.as_view()),
+    path('actualizar-recordatorio/<str:pk>', RecordatorioToggleApiView.as_view()),
+
+    path('registro-detalleordenanalisis/', DetalleOrdenAnalisisApiView.as_view()),
+    path('actualizar-detalleordenanalisis/<str:pk>', DetalleOrdenAnalisisToggleApiView.as_view()),
+    path('registro-resultado/', ResultadoApiView.as_view()),
+    path('actualizar-resultado/<str:pk>', ResultadoToggleApiView.as_view()),
+
+    path('registrar-clienteUsu/', ClienteRegistro.as_view()),
+    path('registrar-trabajadorUsu/', TrabajadorRegistro.as_view()),
+    path('cambiar-pass/<str:pk>', cambiarcontraseña.as_view()),
+    path('registrar-paciente/', PacienteHistoriaApiView.as_view()),
+    path('registrar-ventadetallada/', RegistroVenta.as_view()),
 ]

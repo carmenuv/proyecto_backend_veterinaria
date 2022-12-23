@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 from os import environ
 from dotenv import load_dotenv
@@ -131,10 +132,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/FILES/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
         'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
         'PAGE_SIZE': 10,
+        'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework_simplejwt.authentication.JWTAuthentication'],
 }
 
 # Default primary key field type
@@ -142,3 +147,13 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'gestion.UsuarioModel'
+
+SIMPLE_JWT = {
+    #token duracion de 1hora, 30 minutos y 4 segundos
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1, minutes=30, seconds=5),
+    #Es la firma que se utilizara para firmar y verificar las tokens
+    'SIGNING_KEY': environ.get('TOKEN_SECRET'),
+    #es el nombre con el cual se guardara en el payload del id del usuario
+    'USER_ID_CLAIM': 'id_del_usuario'
+}
