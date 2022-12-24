@@ -1699,7 +1699,7 @@ class RegistroVenta(CreateAPIView):
       venta.MontoT = montoTotal
       venta.save()
       DetalleVentaModel.objects.bulk_create(venta_detalles)
-      return Response('Venta completada',status=status.HTTP_201_CREATED)
+      return Response('Venta completada.',status=status.HTTP_201_CREATED)
 
 # class RegistroAtencion(CreateAPIView):
 #   serializer_class = RegistrarAtencionSerializer
