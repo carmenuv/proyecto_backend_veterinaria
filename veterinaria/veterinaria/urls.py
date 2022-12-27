@@ -23,9 +23,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
+        title="RIZOS Y COLITAS",
         default_version='v1.0',
-        description="App de Veterinaria",
+        description="Clínica Veterinaria con amplia experiencia clínica. Contamos con servicios clínicos y veterinarios de calidad; así también, con un staff de médicos especializados. Para nosotros, lo más importante es el bienestar de tu mascota sin distinción alguna.",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),

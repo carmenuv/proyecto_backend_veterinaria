@@ -840,7 +840,7 @@ class AreaServicioApiView(ListCreateAPIView):
 
   def get(self, request: Request):
         
-        areaServicio = AreaServicioModel.objects.all()
+        areaServicio = AreaServicioModel.objects.select_related('Area','ServTrab').all()
         # many > sirve para indicar al serializador que se le pasara un conjunto de instancias y las tiene que iterar para poder serializarlas / deserializarlas
         areaServicio_serializados = self.serializer_class(instance=areaServicio, many=True)
 
@@ -1233,9 +1233,9 @@ class AtencionToggleApiView(RetrieveUpdateDestroyAPIView):
 
 
 #DetalleAtencion==========================================================================================
-class DetalleAtencionApiView(ListCreateAPIView):
-  serializer_class = DetalleAtencionSerializer
-  queryset = DetalleAtencionModel.objects.all()
+class DetalleAtencionClinicaApiView(ListCreateAPIView):
+  serializer_class = DetalleAtencionClinicaModel
+  queryset = DetalleAtencionClinicaModel.objects.all()
 
   def post(self, request:Request):
     informacion = self.serializer_class(data=request.data)
@@ -1257,7 +1257,7 @@ class DetalleAtencionApiView(ListCreateAPIView):
 
 
   def get(self, request: Request):
-      DetalleAtenciones = DetalleAtencionModel.objects.all()
+      DetalleAtenciones = DetalleAtencionClinicaModel.objects.all()
       detalleatenciones_serializados = self.serializer_class(instance=DetalleAtenciones, many=True)
       return Response(data={
             'message': 'Los detalle atención son:',
@@ -1265,30 +1265,88 @@ class DetalleAtencionApiView(ListCreateAPIView):
       })
 
   def get_queryset(self, request: Request):
-      return DetalleAtencionModel.objects.all()
+      return DetalleAtencionClinicaModel.objects.all()
 
 
-class DetalleAtencionToggleApiView(RetrieveUpdateDestroyAPIView):
-    serializer_class = DetalleAtencionSerializer
+class DetalleAtencionClinicaToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = DetalleAtencionClinicaSerializer
     
     def get(self, request: Request,pk):
-      DetalleAtenciones = DetalleAtencionModel.objects.filter(DetalleAtencionID = pk).first()
+      DetalleAtenciones = DetalleAtencionClinicaModel.objects.filter(DetalleAtencionID = pk).first()
       detalleatenciones_serializados = self.serializer_class(instance=DetalleAtenciones)
       return Response(detalleatenciones_serializados.data)
 
     def put(self, request:Request, pk: str):
 
-        detalleatencion=DetalleAtencionModel.objects.filter(DetalleAtencionID = pk).first()
-        serializer=DetalleAtencionSerializer(detalleatencion,data=request.data)
+        detalleatencion=DetalleAtencionClinicaModel.objects.filter(DetalleAtencionID = pk).first()
+        serializer=DetalleAtencionClinicaSerializer(detalleatencion,data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request:Request, pk: str):
-        detalleatencion=DetalleAtencionModel.objects.filter(DetalleAtencionID = pk).first()
+        detalleatencion=DetalleAtencionClinicaModel.objects.filter(DetalleAtencionID = pk).first()
         detalleatencion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class DetalleAtencionServicioApiView(ListCreateAPIView):
+  serializer_class = DetalleAtencionServicioSerializer
+  queryset = DetalleAtencionServicioModel.objects.all()
+
+  def post(self, request:Request):
+    informacion = self.serializer_class(data=request.data)
+    es_valida = informacion.is_valid()
+
+    if not es_valida:
+      return Response(data={
+        'message': 'Error al crear detalle atención',
+        'content': informacion.errors
+      },status=status.HTTP_400_BAD_REQUEST)
+    else:
+      nuevoDetalleAtencion = informacion.save()
+      nuevoDetalleAtencion_Serializado = self.serializer_class(instance = nuevoDetalleAtencion)
+      
+      return Response(data = {
+        'message': 'Detalle atención creado exitosamente',
+        'content': nuevoDetalleAtencion_Serializado.data
+      },status = status.HTTP_201_CREATED)
+
+
+  def get(self, request: Request):
+      DetalleAtenciones = DetalleAtencionServicioModel.objects.all()
+      detalleatenciones_serializados = self.serializer_class(instance=DetalleAtenciones, many=True)
+      return Response(data={
+            'message': 'Los detalle atención son:',
+            'content': detalleatenciones_serializados.data
+      })
+
+  def get_queryset(self, request: Request):
+      return DetalleAtencionServicioModel.objects.all()
+
+
+class DetalleAtencionServicioToggleApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = DetalleAtencionServicioSerializer
+    
+    def get(self, request: Request,pk):
+      DetalleAtenciones = DetalleAtencionServicioModel.objects.filter(DetalleAtencionID = pk).first()
+      detalleatenciones_serializados = self.serializer_class(instance=DetalleAtenciones)
+      return Response(detalleatenciones_serializados.data)
+
+    def put(self, request:Request, pk: str):
+
+        detalleatencion=DetalleAtencionServicioModel.objects.filter(DetalleAtencionID = pk).first()
+        serializer=DetalleAtencionClinicaSerializer(detalleatencion,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request:Request, pk: str):
+        detalleatencion=DetalleAtencionServicioModel.objects.filter(DetalleAtencionID = pk).first()
+        detalleatencion.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 #OrdenLaboratorio==========================================================================================
 class OrdenLaboratorioApiView(ListCreateAPIView):
@@ -1645,8 +1703,8 @@ class PacienteHistoriaApiView(CreateAPIView):
     )
     
     Hclinica = HClinicaModel.objects.create(
-    PacienteID=nuevoPaciente,
-    Cliente = serializador.validated_data['Cliente']
+      Paciente = nuevoPaciente,
+      Cliente = serializador.validated_data['Cliente']
     )
     nuevoPaciente_Serializado = self.serializer_class(instance = nuevoPaciente)
     
@@ -1683,7 +1741,7 @@ class RegistroVenta(CreateAPIView):
         
         if(float(producto['Cantidad']) < almacen.Cantidad):
             venta_detalle = DetalleVentaModel(
-              VentaID = venta,
+              Venta = venta,
               Producto = Prod,
               Cantidad = producto['Cantidad'],
               MontoD = producto['Cantidad'] * Prod.PrecioUnitario,
@@ -1701,55 +1759,145 @@ class RegistroVenta(CreateAPIView):
       DetalleVentaModel.objects.bulk_create(venta_detalles)
       return Response('Venta completada.',status=status.HTTP_201_CREATED)
 
-# class RegistroAtencion(CreateAPIView):
-#   serializer_class = RegistrarAtencionSerializer
-#   @transaction.atomic
-#   def create(self, request:Request):
-#       serializador = RegistrarAtencionSerializer(data = request.data)
-#       serializador.is_valid(raise_exception = True)
-#       montoTotal = 0
+class RegistroAtencion(CreateAPIView):
+  serializer_class = RegistrarAtencionSerializer
+  @transaction.atomic
+  def create(self, request:Request):
+      serializador = RegistrarAtencionSerializer(data = request.data)
+      serializador.is_valid(raise_exception = True)
+      montoTotal = 0
+      montoTotalClinico = 0
+      montoTotalServicio = 0
 
-#       HClinica =  HClinicaModel.objects.filter(HClinicaID = serializador.validated_data['HClinica']).first()
-#       AreatrabID =  AreaServicioModel.objects.filter(AreaTrabID = serializador.validated_data['AreatrabID']).first()
-#       ServicioID =  ServicioModel.objects.filter(ServicioID = serializador.validated_data['ServicioID']).first()
-#       Trabajador =  TrabajadorModel.objects.filter(TrabajadorID = serializador.validated_data['Trabajador']).first()
-#       DiagnosticoID =  DiagnosticoModel.objects.filter(DiagnosticoID = serializador.validated_data['DiagnosticoID']).first()
+      HClinica =  HClinicaModel.objects.filter(HClinicaID = serializador.validated_data['HClinica']).first()
+      Paciente =  PacienteModel.objects.filter(PacienteID = HClinica.Paciente.PacienteID).first()
       
-#       if(serializador.validated_data['SiguienteAtencion']== None):
-#           serializador.validated_data['SiguienteAtencion'] = '0001-01-01' 
+      if(serializador.validated_data['SiguienteAtencion'] == None):
+          serializador.validated_data['SiguienteAtencion'] = '0001-01-01' 
+      
+      DetallesClinicos = serializador.validated_data['DetallesClinicos']
+      DetallesServicios = serializador.validated_data['DetallesServicios']
+      
+      if(DetallesClinicos == None and DetallesServicios == None):
+        return Response('no esta ingresando servicios para la atencion',status=status.HTTP_400_BAD_REQUEST)
 
-#       Atencion = AtencionModel.objects.create(
-#         HClinica = HClinica,
-#         AreatrabID = AreatrabID,
-#         ServicioID = ServicioID,
-#         Trabajador = Trabajador,
-#         DiagnosticoID = DiagnosticoID,
-#         SiguienteAtencion = serializador.validated_data['SiguienteAtencion'],
-#         MontoT = 0
-#       )
-#       Detalles = serializador.validated_data['Detalles']
+      Atencion = AtencionModel.objects.create(
+        HClinica = HClinica,
+        SiguienteAtencion = serializador.validated_data['SiguienteAtencion'],
+        Descuento = serializador.validated_data['Descuento'],
+        MontoT = 0,
+      )
+      
 
-#       Detalles_Atencion = []
+      Detalles_Clinicos_Atencion = []
+      Detalles_Servicios_Atencion = []
+      Detalles_Recordatorio = []
 
-#       for Detalle in Detalles:
-            
-#             Detalle_Atencion = DetalleVentaModel(
-#               AtencionID = Atencion,
-#               TipoDetalleAtencionID = models.ForeignKey(TipoDetalleAtencionModel, on_delete=models.CASCADE, db_column='TipodetalleAtencionID', null= False)
-#               Precio = models.FloatField(null=False, db_column='precio')
-#               Cantidad = models.FloatField(null=False, db_column='Cantidad')
-#               Descuento = models.FloatField(null=False, db_column='descuento')
-#               MontoD = models.FloatField(null=False, db_column='MontoD', default=0)
-#               Observacion = models.TextField(null=True, db_column='Observacion')
-#             )
-#             almacen.Cantidad = almacen.Cantidad - producto['Cantidad']
-#             almacen.save()
-#             montoTotal = montoTotal + producto['Cantidad'] * Prod.PrecioUnitario
-#             venta_detalles.append(venta_detalle)
-#       if(venta.Descuento > 0):
-#         montoTotal = montoTotal - ((montoTotal * venta.Descuento)/100)
-#       venta.MontoT = montoTotal
-#       venta.save()
-#       DetalleVentaModel.objects.bulk_create(venta_detalles)
-#       return Response('Venta exitosa',status=status.HTTP_201_CREATED)
+      if(DetallesClinicos != None):
+        for Detalle in DetallesClinicos:
+              diagnostico = DiagnosticoModel.objects.filter(DiagnosticoID = Detalle['Diagnostico']).first()
+              AreatrabD =  AreaServicioModel.objects.filter(AreaTrabID = Detalle['Areatrab']).first()
+              DetAt = TipoDetalleAtencionModel.objects.filter(TipoDetalleAtencionID = Detalle['TipoDetalleAtencion']).first()
+              TrabajadorD =  TrabajadorModel.objects.filter(TrabajadorID = Detalle['Trabajador']).first()
+              Detalle_Atencion_clinico = DetalleAtencionClinicaModel(
+                Atencion = Atencion,
+                TipoDetalleAtencion = DetAt,
+                Diagnostico = diagnostico,
+                Areatrab = AreatrabD,
+                Trabajador = TrabajadorD,
+                Pronostico = Detalle['Pronostico'],
+                Cantidad = Detalle['Cantidad'],
+                MontoD = Detalle['Cantidad'] * DetAt.Precio,
+                Observacion = Detalle['Observacion'],
+              )
+              if(Detalle['Recordatorio'] == True and serializador.validated_data['SiguienteAtencion'] != '0001-01-01' ):
+                recordatorio = RecordatorioModel(
+                  Atencion = Atencion,
+                  TipoDetalleAtencion = DetAt,
+                  Paciente = Paciente,
+                  FechaRecordatorio = serializador.validated_data['SiguienteAtencion']
+                )
+                Detalles_Recordatorio.append(recordatorio)
+              montoTotalClinico = montoTotalClinico + Detalle['Cantidad'] * DetAt.Precio
+              Detalles_Clinicos_Atencion.append(Detalle_Atencion_clinico)
+      
+      if(DetallesServicios != None):
+        for Detalle in DetallesServicios:
+              DetAt = TipoDetalleAtencionModel.objects.filter(TipoDetalleAtencionID = Detalle['TipoDetalleAtencion']).first()
+              AreatrabD =  AreaServicioModel.objects.filter(AreaTrabID = Detalle['Areatrab']).first()
+              ServicioD =  ServicioModel.objects.filter(ServicioID = Detalle['Servicio']).first()
+              TrabajadorD =  TrabajadorModel.objects.filter(TrabajadorID = Detalle['Trabajador']).first()
+              Detalle_Atencion_Servicio = DetalleAtencionServicioModel(
+                Atencion = Atencion,
+                TipoDetalleAtencion = DetAt,
+                Areatrab = AreatrabD,
+                Servicio = ServicioD,
+                Trabajador = TrabajadorD,
+                Cantidad = Detalle['Cantidad'],
+                MontoD = Detalle['Cantidad'] * DetAt.Precio,
+                Observacion = Detalle['Observacion'],
+              )
+              if(Detalle['Recordatorio'] == True and serializador.validated_data['SiguienteAtencion'] != '0001-01-01' ):
+                recordatorio = RecordatorioModel(
+                  Atencion = Atencion,
+                  TipoDetalleAtencion = DetAt,
+                  Paciente = Paciente,
+                  FechaRecordatorio = serializador.validated_data['SiguienteAtencion']
+                )
+                Detalles_Recordatorio.append(recordatorio)
+              montoTotalServicio = montoTotalServicio + Detalle['Cantidad'] * DetAt.Precio
+              Detalles_Servicios_Atencion.append(Detalle_Atencion_Servicio)
 
+      montoTotal = montoTotalServicio + montoTotalClinico      
+      if(Atencion.Descuento > 0):
+        montoTotal = montoTotal - ((montoTotal * Atencion.Descuento)/100)
+      Atencion.MontoT = montoTotal
+      Atencion.save()
+      DetalleAtencionClinicaModel.objects.bulk_create(Detalles_Clinicos_Atencion)
+      DetalleAtencionServicioModel.objects.bulk_create(Detalles_Servicios_Atencion)
+      if(Detalles_Recordatorio != None):
+        RecordatorioModel.objects.bulk_create(Detalles_Recordatorio)
+      return Response('Atencion registrada correctamente',status=status.HTTP_201_CREATED)
+
+class HistoriaClinicaVista(ListAPIView):
+  queryset = HClinicaModel.objects.all().select_related('Cliente').select_related('Paciente')
+  serializer_class = HistoriaClinicaSerializer
+
+class RegistroOrdenLaboratorio(CreateAPIView):
+  serializer_class = RegistrarOrdenLabSerializer
+  @transaction.atomic
+  def create(self, request:Request):
+      serializador = RegistrarOrdenLabSerializer(data = request.data)
+      serializador.is_valid(raise_exception = True)
+      montoTotal = 0
+
+      atencionEncontrada =  AtencionModel.objects.filter(AtencionID = serializador.validated_data['Atencion']).first()
+      TrabajadorD =  TrabajadorModel.objects.filter(TrabajadorID = serializador.validated_data['Trabajador']).first()
+              
+      Orden = OrdenLaboratorioModel.objects.create(
+        Atencion = atencionEncontrada,
+        Trabajador = TrabajadorD,
+        Descuento = serializador.validated_data['Descuento'],
+        MontoD = 0,
+      )
+      
+      Ordenes = serializador.validated_data['DetallesLaboratorio']
+
+      Ordenes_Lab = []
+
+      for orden in Ordenes:
+        Analisis = AnalisisModel.objects.filter(AnalisisID = orden['Analisis']).first()
+        orden_lab = DetalleOrdenAnalisisModel(
+              OrdenLab = Orden,
+              Analisis = Analisis,
+              Observacion = orden['Observacion'],
+        )
+        montoTotal = montoTotal + Analisis.Precio
+        Ordenes_Lab.append(orden_lab)
+      
+      if(Orden.Descuento > 0):
+        montoTotal = montoTotal - ((montoTotal * Orden.Descuento)/100)
+      Orden.MontoD = montoTotal
+      Orden.save()
+      DetalleOrdenAnalisisModel.objects.bulk_create(Ordenes_Lab)
+      return Response('Ordebes Laboratorio completado.',status=status.HTTP_201_CREATED)

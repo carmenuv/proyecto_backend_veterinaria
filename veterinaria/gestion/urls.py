@@ -57,8 +57,10 @@ urlpatterns = [
 
     path('registro-atencion/', AtencionApiView.as_view()),
     path('actualizar-atencion/<str:pk>', AtencionToggleApiView.as_view()),
-    path('registro-detalleatencion/', DetalleAtencionApiView.as_view()),
-    path('actualizar-detalleatencion/<str:pk>', DetalleAtencionToggleApiView.as_view()),
+    path('registro-detalleatencion-clinica/', DetalleAtencionClinicaApiView.as_view()),
+    path('actualizar-detalleatencion-clinica/<str:pk>', DetalleAtencionClinicaToggleApiView.as_view()),
+    path('registro-detalleatencion-servicio/', DetalleAtencionServicioApiView.as_view()),
+    path('actualizar-detalleatencion-servicio/<str:pk>', DetalleAtencionServicioToggleApiView.as_view()),
 
     path('registro-ordenlaboratorio/', OrdenLaboratorioApiView.as_view()),
     path('actualizar-ordenlaboratorio/<str:pk>', OrdenLaboratorioToggleApiView.as_view()),
@@ -75,4 +77,8 @@ urlpatterns = [
     path('cambiar-pass/<str:pk>', cambiarcontraseña.as_view()),
     path('registrar-paciente/', PacienteHistoriaApiView.as_view()),
     path('registrar-ventadetallada/', RegistroVenta.as_view()),
+    path('registrar-atenciondetallada/', RegistroAtencion.as_view()),
+    path('Historia-clinica/', HistoriaClinicaVista.as_view()),
+    path('registrar-orden/', RegistroOrdenLaboratorio.as_view()),
 ]
+

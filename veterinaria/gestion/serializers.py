@@ -51,6 +51,7 @@ class AreaSerializer(serializers.ModelSerializer):
   class Meta:
     model = AreaModel
     fields = '__all__'
+  
 
 class TipoDocumentoSerializer(serializers.ModelSerializer):
   class Meta:
@@ -84,8 +85,6 @@ class ProductoSerializer(serializers.ModelSerializer):
   class Meta:
     model = ProductoModel
     fields = ('ProductoID','TipoProducto','NombreProducto','Descripcion', 'PrecioUnitario', 'Observacion')
-
- 
 
 class Producto2Serializer(serializers.ModelSerializer):
   class Meta:
@@ -168,16 +167,19 @@ class Trabajador2Serializer(serializers.ModelSerializer):
 
 
 class servicioTrabajadorSerializer(serializers.ModelSerializer):
+
   class Meta:
-    # StringRelatedField > str = campo calculado
-    Trabajador = serializers.StringRelatedField()
+
     model = servicioTrabajadorModel
-    fields = '__all__'
-    extra_kwargs = {
-              'Estado': {
-                  'read_only': True
-              }
-          }
+    fields = ('SerTrabID','Servicio','Trabajador','observacion')
+    
+  def to_representation(self, instance):
+    return {
+      'SerTrabID': instance.SerTrabID,
+      'Servicio' : instance.Servicio.nombreServicio,
+      'Trabajador': instance.Trabajador.ApePaterno+' '+instance.Trabajador.ApeMaterno+' '+instance.Trabajador.Nombre,
+      'observacion' : instance.observacion,
+    }
 
 class servicioTrabajador2Serializer(serializers.ModelSerializer):
   class Meta:
@@ -191,26 +193,31 @@ class servicioTrabajador2Serializer(serializers.ModelSerializer):
 
 
 class areaServicioSerializer(serializers.ModelSerializer):
+
   class Meta:
 
-    ServTrab = serializers.StringRelatedField()
     model = AreaServicioModel
-    fields = '__all__'
-    extra_kwargs = {
-              'Estado': {
-                  'read_only': True
-              }
-          }
+    fields = ('AreaTrabID','Area','ServTrab','Fecha','horaInicio','horaFin','cupo','observacion')
+    
+  def to_representation(self, instance):
+    return {
+      'AreaTrabID': instance.AreaTrabID,
+      'Area' : instance.Area.nombreArea,
+      'Servicio Trabajador':  instance.ServTrab.Servicio.nombreServicio+' - '+instance.ServTrab.Trabajador.Nombre+' '+instance.ServTrab.Trabajador.ApePaterno+' '+instance.ServTrab.Trabajador.ApeMaterno,
+      'Fecha' : instance.Fecha,
+      'horaInicio' : instance.horaInicio.strftime('%H:%M'),
+      'horaFin' : instance.horaFin.strftime('%H:%M'),
+      'cupo' : instance.cupo,
+      'observacion' : instance.observacion,
+    }
+
+    
 
 class areaServicio2Serializer(serializers.ModelSerializer):
   class Meta:
     model = AreaServicioModel
     fields = '__all__'
-    extra_kwargs = {
-              'Estado': {
-                  'read_only': True
-              }
-          }
+    
 
 class AlmacenSerializer(serializers.ModelSerializer):
   class Meta:
@@ -236,21 +243,21 @@ class Almacen2Serializer(serializers.ModelSerializer):
 class CitaSerializer(serializers.ModelSerializer):
   class Meta:
     model = CitaModel
-    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+    fields = ('CitasID','Areatrab','Cliente','Servicio', 'Paciente')
 
   def to_representation(self, instance):
     return {
       'CitasID': instance.CitasID,
-      'AreatrabID' : instance.AreatrabID.Area,
-      'ClienteID': instance.ClienteID.Nombre,
-      'ServicioID' : instance.ServicioID.nombreServicio,
-      'PacienteID' : instance.PacienteID.Nombre,
+      'Areatrab' : instance.AreatrabID.Area,
+      'Cliente': instance.ClienteID.Nombre,
+      'Servicio' : instance.ServicioID.nombreServicio,
+      'Paciente' : instance.PacienteID.Nombre,
     }
 
 class Cita2Serializer(serializers.ModelSerializer):
   class Meta:
     model = CitaModel
-    fields = ('CitasID','AreatrabID','ClienteID','ServicioID', 'PacienteID')
+    fields = ('CitasID','Areatrab','Cliente','Servicio', 'Paciente')
 
 
 class VentaSerializer(serializers.ModelSerializer):
@@ -268,9 +275,14 @@ class AtencionSerializer(serializers.ModelSerializer):
     model = AtencionModel
     fields = '__all__'
 
-class DetalleAtencionSerializer(serializers.ModelSerializer):
+class DetalleAtencionClinicaSerializer(serializers.ModelSerializer):
   class Meta:
-    model = DetalleAtencionModel
+    model = DetalleAtencionClinicaModel
+    fields = '__all__'
+
+class DetalleAtencionServicioSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DetalleAtencionServicioModel
     fields = '__all__'
 
 class OrdenLaboratorioSerializer(serializers.ModelSerializer):
@@ -303,6 +315,18 @@ class Resultado2Serializer(serializers.ModelSerializer):
     model = RecordatorioModel
     fields = '__all__'
 
+class PacienteSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = PacienteModel
+    fields = '__all__'
+
+class HistoriaClinicaSerializer(serializers.ModelSerializer):
+  Cliente = ClienteSerializer()
+  Paciente = PacienteSerializer()
+  class Meta:
+    model = HClinicaModel
+    fields = ('HClinicaID','FechaApertura','observacion','Cliente','Paciente')
+
 
 class cambiarpassword(serializers.Serializer):
   newpasssword = serializers.CharField(required=True)
@@ -330,21 +354,39 @@ class RegistrarVentaSerializer(serializers.Serializer):
   Descuento = serializers.FloatField()
   Productos = ListaProductosSerializer(many=True)
 
-class ListaDetalleatencion(serializers.Serializer):
-  AtencionID = serializers.IntegerField()
-  TipoDetalleAtencionID = serializers.IntegerField()
-  Precio = serializers.FloatField()
+class ListaDetalleatencionClinica(serializers.Serializer):
+  TipoDetalleAtencion = serializers.IntegerField()
+  Diagnostico = serializers.IntegerField()
+  Areatrab = serializers.IntegerField()
+  Trabajador = serializers.IntegerField()
+  Pronostico = serializers.CharField(allow_blank=True)
   Cantidad = serializers.FloatField()
-  Descuento = serializers.FloatField()
-  MontoD = serializers.FloatField()
+  Recordatorio = serializers.BooleanField()
+  Observacion = serializers.CharField(allow_blank=True)
+
+class ListaDetalleatencionServicio(serializers.Serializer):
+  TipoDetalleAtencion = serializers.IntegerField()
+  Areatrab = serializers.IntegerField()
+  Servicio = serializers.IntegerField()
+  Trabajador = serializers.IntegerField()
+  Cantidad = serializers.FloatField()
+  Recordatorio = serializers.BooleanField()
+  Observacion = serializers.CharField(allow_blank=True)
 
 class RegistrarAtencionSerializer(serializers.Serializer):
   HClinica = serializers.IntegerField()
-  AreatrabID = serializers.IntegerField()
-  ServicioID = serializers.IntegerField()
+  SiguienteAtencion = serializers.DateField(allow_null=True)
+  Descuento = serializers.FloatField()
+  DetallesClinicos = ListaDetalleatencionClinica(many=True,allow_null=True)
+  DetallesServicios = ListaDetalleatencionServicio(many=True,allow_null=True)
+
+
+class ListaOrdenLab(serializers.Serializer):
+  Analisis = serializers.IntegerField()
+  Observacion = serializers.CharField(allow_blank=True)
+
+class RegistrarOrdenLabSerializer(serializers.Serializer):
+  Atencion = serializers.IntegerField()
   Trabajador = serializers.IntegerField()
-  DiagnosticoID = serializers.IntegerField()
-  FechaAtencion = serializers.DateField()
-  SiguienteAtencion = serializers.DateField()
-  MontoT = serializers.FloatField()
-  Detalles = ListaDetalleatencion(many=True)
+  Descuento = serializers.FloatField()
+  DetallesLaboratorio = ListaOrdenLab(many=True,allow_null=True)
